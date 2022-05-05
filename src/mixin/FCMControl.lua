@@ -5,7 +5,7 @@ $module FCMControl
 
 Summary of modifications:
 - Setters that accept `FCString` now also accept Lua `string` and `number`.
-- In getters with an `FCString` parameter, the parameter is now optional and a Lua `string` is returned. 
+- In getters with an `FCString` parameter, the parameter is now optional and a Lua `string` is returned.
 - Ported `GetParent` from PDK to allow the parent window to be accessed from a control.
 - Handlers for the `Command` event can now be set on a control.
 ]] --

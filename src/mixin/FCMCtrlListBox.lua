@@ -5,7 +5,7 @@ $module FCMCtrlListBox
 
 Summary of modifications:
 - Setters that accept `FCString` now also accept Lua `string` and `number`.
-- In getters with an `FCString` parameter, the parameter is now optional and a Lua `string` is returned. 
+- In getters with an `FCString` parameter, the parameter is now optional and a Lua `string` is returned.
 - Setters that accept `FCStrings` now also accept multiple arguments of `FCString`, Lua `string`, or `number`.
 - Numerous additional methods for accessing and modifying listbox items.
 - Added `SelectionChange` custom control event.
