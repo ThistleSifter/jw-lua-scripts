@@ -31,9 +31,7 @@ Override Changes:
 @ str (FCString | string | number)
 ]]
 function public:SetText(str)
-    mixin_helper.assert_argument_type(2, str, "string", "number", "FCString")
-
-    mixin.FCMControl.SetText(self, str)
+    utils.call_and_rethrow(2, mixin.FCMControl.SetText, self, str)
     trigger_change(self)
 end
 
