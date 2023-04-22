@@ -7,7 +7,7 @@ $module FCMUI
 - `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 ]] --
 local mixin = require("library.mixin")
-local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
 
 local meta = {}
 local public = {}
@@ -26,20 +26,6 @@ Override Changes:
 @ [str] (FCString)
 : (string)
 ]]
-function public:GetDecimalSeparator(str)
-    mixin_helper.assert_argument_type(2, str, "nil", "FCString")
-
-    local do_return = false
-    if not str then
-        str = temp_str
-        do_return = true
-    end
-
-    self:GetDecimalSeparator_(str)
-
-    if do_return then
-        return str.LuaString
-    end
-end
+public.GetDecimalSeparator = mixin_proxy.fcstring_getter("GetDecimalSeparator_", 2, 2)
 
 return {meta, public}
