@@ -8,6 +8,7 @@ $module FCMCtrlCheckbox
 ]] --
 local mixin = require("library.mixin")
 local mixin_helper = require("library.mixin_helper")
+local utils = require("library.utils")
 
 local meta = {}
 local public = {}
@@ -27,10 +28,7 @@ Override Changes:
 @ checked (number)
 ]]
 function public:SetCheck(checked)
-    mixin_helper.assert_argument_type(2, checked, "number")
-
-    self:SetCheck_(checked)
-
+    utils.call_and_rethrow(2, self.SetCheck_, self, checked)
     trigger_check_change(self)
 end
 
