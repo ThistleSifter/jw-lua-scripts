@@ -27,7 +27,7 @@ Override Changes:
 @ [title] (FCString)
 : (string) Returned if `title` is omitted.
 ]]
-public.GetTitle = mixin_proxy.fcstring_getter("GetTitle_", 2, 2)
+public.GetTitle = mixin_proxy.fcstring_getter("GetTitle_", 2, 2, temp_str)
 
 --[[
 % SetTitle
@@ -40,6 +40,6 @@ Override Changes:
 @ self (__FCMUserWindow)
 @ title (FCString | string | number)
 ]]
-public.SetTitle = mixin_proxy.fcstring_setter("SetTitle_", 2)
+public.SetTitle = mixin_proxy.fcstring_setter("SetTitle_", 2, temp_str)
 
 return {meta, public}
