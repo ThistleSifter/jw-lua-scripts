@@ -8,7 +8,7 @@ $module __FCMUserWindow
 - `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 ]] --
 local mixin = require("library.mixin")
-local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
 
 local meta = {}
 local public = {}
@@ -27,21 +27,7 @@ Override Changes:
 @ [title] (FCString)
 : (string) Returned if `title` is omitted.
 ]]
-function public:GetTitle(title)
-    mixin_helper.assert_argument_type(2, title, "nil", "FCString")
-
-    local do_return = false
-    if not title then
-        title = temp_str
-        do_return = true
-    end
-
-    self:GetTitle_(title)
-
-    if do_return then
-        return title.LuaString
-    end
-end
+public.GetTitle = mixin_proxy.fcstring_getter("GetTitle_", 2, 2)
 
 --[[
 % SetTitle
@@ -54,10 +40,6 @@ Override Changes:
 @ self (__FCMUserWindow)
 @ title (FCString | string | number)
 ]]
-function public:SetTitle(title)
-    mixin_helper.assert_argument_type(2, title, "string", "number", "FCString")
-
-    self:SetTitle_(mixin_helper.to_fcstring(title, temp_str))
-end
+public.SetTitle = mixin_proxy.fcstring_setter("SetTitle_", 2)
 
 return {meta, public}
