@@ -26,6 +26,6 @@ Override Changes:
 @ [str] (FCString)
 : (string)
 ]]
-public.GetDecimalSeparator = mixin_proxy.fcstring_getter("GetDecimalSeparator_", 2, 2)
+public.GetDecimalSeparator = mixin_proxy.fcstring_getter("GetDecimalSeparator_", 2, 2, temp_str)
 
 return {meta, public}
