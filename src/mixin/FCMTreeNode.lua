@@ -8,7 +8,7 @@ $module FCMTreeNode
 - `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 ]] --
 local mixin = require("library.mixin")
-local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
 
 local meta = {}
 local public = {}
@@ -27,21 +27,7 @@ Override Changes:
 @ [str] (FCString)
 : (string) Returned if `str` is omitted.
 ]]
-function public:GetText(str)
-    mixin_helper.assert_argument_type(2, str, "nil", "FCString")
-
-    local do_return = false
-    if not str then
-        str = temp_str
-        do_return = true
-    end
-
-    self:GetText_(str)
-
-    if do_return then
-        return str.LuaString
-    end
-end
+public.GetText = mixin_proxy.fcstring_getter("GetText_", 2, 2)
 
 --[[
 % SetText
@@ -54,10 +40,6 @@ Override Changes:
 @ self (FCMTreeNode)
 @ str (FCString | string | number)
 ]]
-function public:SetText(str)
-    mixin_helper.assert_argument_type(2, str, "string", "number", "FCString")
-
-    self:SetText_(mixin_helper.to_fcstring(str, temp_str))
-end
+public.SetText = mixin_proxy.fcstring_setter("SetText_", 2)
 
 return {meta, public}
