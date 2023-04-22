@@ -27,7 +27,7 @@ Override Changes:
 @ [str] (FCString)
 : (string) Returned if `str` is omitted.
 ]]
-public.GetText = mixin_proxy.fcstring_getter("GetText_", 2, 2)
+public.GetText = mixin_proxy.fcstring_getter("GetText_", 2, 2, temp_str)
 
 --[[
 % SetText
@@ -40,6 +40,6 @@ Override Changes:
 @ self (FCMTreeNode)
 @ str (FCString | string | number)
 ]]
-public.SetText = mixin_proxy.fcstring_setter("SetText_", 2)
+public.SetText = mixin_proxy.fcstring_setter("SetText_", 2, temp_str)
 
 return {meta, public}
