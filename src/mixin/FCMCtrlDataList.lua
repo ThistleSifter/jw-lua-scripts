@@ -28,7 +28,7 @@ Override Changes:
 @ title (FCString | string | number)
 @ columnwidth (number)
 ]]
-public.AddColumn = mixin_proxy.fcstring_setter("AddColumn_", 2)
+public.AddColumn = mixin_proxy.fcstring_setter("AddColumn_", 2, temp_str)
 
 --[[
 % SetColumnTitle
@@ -42,7 +42,7 @@ Override Changes:
 @ columnindex (number)
 @ title (FCString | string | number)
 ]]
-public.SetColumnTitle = mixin_proxy.fcstring_setter("SetColumnTitle_", 3)
+public.SetColumnTitle = mixin_proxy.fcstring_setter("SetColumnTitle_", 3, temp_str)
 
 --[[
 % AddHandleCheck
