@@ -1,6 +1,5 @@
 --  Author: Edward Koltun
 --  Date: April 21, 2023
-
 --[[
 $module Mixin Proxy
 
@@ -31,14 +30,15 @@ The proxy will accept any value in place of the `FCString`, casting them to an `
 
 @ func (string | function) The function to proxy. Can be either the name of the original method to be called on the `self` object or a function.
 @ argument_number (number) The real argument number of the `FCString` parameter (`self` is argument #1).
+@ fcstr [FCString] Optional `FCString` object that can be reused for casting.
 : (function) Mixin proxy method.
 ]]
-function mixin_proxy.fcstring_setter(func, argument_number)
+function mixin_proxy.fcstring_setter(func, argument_number, fcstr)
     func = resolve_func(func)
     return function(self, ...)
         local args = {}
         table.pack(args, ...)
-        args[argument_number - 1] = mixin_helper.to_fcstring(args[argument_number - 1])
+        args[argument_number - 1] = mixin_helper.to_fcstring(args[argument_number - 1], fcstr)
         return func(self, table.unpack(args))
     end
 end
@@ -49,15 +49,16 @@ end
 Creates a proxy for a getter method that expects an `FCString` parameter in which to place the result. The returned proxy method has the following behaviour:
 - The `FCString` parameter is optional, regardless of where it is in the signature.
 - If an `FCString` is passed, the behaviour is that of the original method (ie fluid, in most cases).
-- If the `FCString` is omitted, the result ia returned as Lua string.
+- If the `FCString` is omitted, the result is returned as Lua string.
 - This proxy is only designed to work with one optional parameter.
 
 @ func (string | function) The function to proxy. Can be either the name of the original method to be called on the `self` object or a function.
 @ argument_number (number) The real argument number of the `FCString` parameter (`self` is argument #1).
 @ total_num_args (number) The total number of expected arguments, including the `FCString`.
+@ fcstr [FCString] Optional `FCString` object to be reused as the inserted parameter.
 : (function) Mixin proxy method.
 ]]
-function mixin_proxy.fcstring_getter(func, argument_number, total_num_args)
+function mixin_proxy.fcstring_getter(func, argument_number, total_num_args, fcstr)
     func = resolve_func(func)
     return function(self, ...)
         if select("#", ...) == total_num_args - 1 then
@@ -66,7 +67,7 @@ function mixin_proxy.fcstring_getter(func, argument_number, total_num_args)
 
         local args = {}
         table.pack(args, ...)
-        local fcstring = finale.FCString()
+        local fcstring = fcstr or finale.FCString()
         table.insert(args, argument_number - 1, fcstring)
         utils.catch_and_rethrow(2, func, table.unpack(args))
         return fcstring.LuaString
