@@ -9,6 +9,7 @@ $module FCMCtrlDataList
 ]] --
 local mixin = require("library.mixin")
 local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
 
 local meta = {}
 local public = {}
@@ -27,12 +28,7 @@ Override Changes:
 @ title (FCString | string | number)
 @ columnwidth (number)
 ]]
-function public:AddColumn(title, columnwidth)
-    mixin_helper.assert_argument_type(2, title, "string", "number", "FCString")
-    mixin_helper.assert_argument_type(3, columnwidth, "number")
-
-    self:AddColumn_(mixin_helper.to_fcstring(title, temp_str), columnwidth)
-end
+public.AddColumn = mixin_proxy.fcstring_setter("AddColumn_", 2)
 
 --[[
 % SetColumnTitle
@@ -46,12 +42,7 @@ Override Changes:
 @ columnindex (number)
 @ title (FCString | string | number)
 ]]
-function public:SetColumnTitle(columnindex, title)
-    mixin_helper.assert_argument_type(2, columnindex, "number")
-    mixin_helper.assert_argument_type(3, title, "string", "number", "FCString")
-
-    self:SetColumnTitle_(columnindex, mixin_helper.to_fcstring(title, temp_str))
-end
+public.SetColumnTitle = mixin_proxy.fcstring_setter("SetColumnTitle_", 3)
 
 --[[
 % AddHandleCheck
