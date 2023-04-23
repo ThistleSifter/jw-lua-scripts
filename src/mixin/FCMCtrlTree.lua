@@ -7,7 +7,7 @@ $module FCMCtrlTree
 - Methods that accept `FCString` will also accept Lua `string` or `number`.
 ]] --
 local mixin = require("library.mixin")
-local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
 
 local meta = {}
 local props = {}
@@ -28,12 +28,6 @@ Override Changes:
 @ text (FCString | string | number)
 : (FCMTreeNode)
 ]]
-function public:AddNode(parentnode, iscontainer, text)
-    mixin_helper.assert_argument_type(2, parentnode, "nil", "FCTreeNode")
-    mixin_helper.assert_argument_type(3, iscontainer, "boolean")
-    mixin_helper.assert_argument_type(4, text, "string", "number", "FCString")
-
-    return self:AddNode_(parentnode, iscontainer, mixin_helper.to_fcstring(text, temp_str))
-end
+public.AddNode = mixin_proxy.fcstring_setter("AddNode_", 4, temp_str)
 
 return {meta, public}
