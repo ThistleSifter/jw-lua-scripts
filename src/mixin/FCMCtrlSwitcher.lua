@@ -11,6 +11,8 @@ $module FCMCtrlSwitcher
 ]] --
 local mixin = require("library.mixin")
 local mixin_helper = require("library.mixin_helper")
+local mixin_proxy = require("library.mixin_proxy")
+local utils = require("library.utils")
 
 local meta = {}
 local public = {}
@@ -49,15 +51,11 @@ Override Changes:
 @ self (FCMCtrlSwitcher)
 @ title (FCString | string | number)
 ]]
-function public:AddPage(title)
-    mixin_helper.assert_argument_type(2, title, "string", "number", "FCString")
-
-    title = mixin_helper.to_fcstring(title, temp_str)
-
+public.AddPage = mixin_proxy.fcstring_setter(function(self, title)
     self:AddPage_(title)
     table.insert(private[self].Index, title.LuaString)
     private[self].TitleIndex[title.LuaString] = #private[self].Index - 1
-end
+end, 2, temp_str)
 
 --[[
 % AddPages
@@ -89,12 +87,7 @@ Override Changes:
 @ control (FCControl | FCMControl)
 @ pageindex (number)
 ]]
-function public:AttachControl(control, pageindex)
-    mixin_helper.assert_argument_type(2, control, "FCControl", "FCMControl")
-    mixin_helper.assert_argument_type(3, pageindex, "number")
-
-    mixin_helper.boolean_to_error(self, "AttachControl", control, pageindex)
-end
+public.AttachControl = mixin_proxy.boolean_to_error("AttachControl_")
 
 --[[
 % AttachControlByTitle
@@ -132,10 +125,7 @@ Override Changes:
 @ index (number)
 ]]
 function public:SetSelectedPage(index)
-    mixin_helper.assert_argument_type(2, index, "number")
-
-    self:SetSelectedPage_(index)
-
+    utils.call_and_rethrow(2, self.SetSelectedPage_, self, index)
     trigger_page_change(self)
 end
 
@@ -170,21 +160,10 @@ Retrieves the title of the currently selected page.
 @ [title] (FCString) Optional `FCString` object to populate.
 : (string | nil) Returned if `title` is omitted. `nil` if no page is selected
 ]]
-function public:GetSelectedPageTitle(title)
-    mixin_helper.assert_argument_type(2, title, "nil", "FCString")
-
+public.GetSelectedPageTitle = mixin_proxy.fcstring_getter(function(self, title)
     local index = self:GetSelectedPage_()
-
-    if index == -1 then
-        if title then
-            title.LuaString = ""
-        else
-            return nil
-        end
-    else
-        return mixin.FCMCtrlSwitcher.GetPageTitle(self, index, title)
-    end
-end
+    title.LuaString = index == -1 and "" or mixin.FCMCtrlSwitcher.GetPageTitle(self, index, title)
+end, 2, 2, temp_str)
 
 --[[
 % GetPageTitle
@@ -198,19 +177,13 @@ Retrieves the title of a page.
 @ [str] (FCString) An optional `FCString` object to populate.
 : (string) Returned if `str` is omitted.
 ]]
-function public:GetPageTitle(index, str)
+public.GetPageTitle = mixin_proxy.fcstring_getter(function(self, index, str)
     mixin_helper.assert_argument_type(2, index, "number")
-    mixin_helper.assert_argument_type(3, str, "nil", "FCString")
 
     local text = private[self].Index[index + 1]
     mixin_helper.force_assert(text, "No page at index " .. tostring(index))
-
-    if str then
-        str.LuaString = text
-    else
-        return text
-    end
-end
+    str.LuaString = text
+end, 3, 3, temp_str)
 
 --[[
 % HandlePageChange
