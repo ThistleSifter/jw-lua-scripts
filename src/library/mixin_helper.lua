@@ -581,7 +581,7 @@ function mixin_helper.to_fcstring(value, fcstr)
     end
 
     fcstr = fcstr or finale.FCString()
-    fcstr.LuaString = tostring(value)
+    fcstr.LuaString = value == nil and "" or tostring(value)
     return fcstr
 end
 
