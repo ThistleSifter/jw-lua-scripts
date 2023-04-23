@@ -84,8 +84,6 @@ Creates a proxy that takes a boolean status result and if false, throws an error
 ]]
 function mixin_proxy.boolean_to_error(func)
     func = resolve_func(func)
-
-    -- name the function after the rethrow placeholder!!
     return function(self, ...)
         if not utils.catch_and_rethrow(2, func, self, ...) then
             error(utils.rethrow_placeholder() .. " has encountered an error.", 2)
