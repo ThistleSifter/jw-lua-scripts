@@ -210,18 +210,22 @@ end
 Calls a function and returns any returned values. If any errors are thrown at the level this function is called, they will be rethrown at the specified level with new level information.
 If the error message contains the rethrow placeholder enclosed in single quotes (see `utils.rethrow_placeholder`), it will be replaced with the correct function name for the new level.
 
-*The first argument must have the same name as the `rethrow_placeholder`, chosen for uniqueness.*
+Options Table:
+- *levels (`number`)* - Number of levels to rethrow.
+- *arg_num_rewriter (`function`)* - Function that rewrites the argument number for bad argument errors. Should accept a `number` (the existing argument number) and return a `number` (the new argument number).
 
-@ levels (number) Number of levels to rethrow.
+*Note The second argument must have the same name as the `rethrow_placeholder`, chosen for uniqueness.*
+
+@ opt (number | table) If a `number`, the number of levels to rethrow. If a `table`, a table of options.
 @ tryfunczzz (function) The function to call.
 @ ... (any) Any arguments to be passed to the function.
 : (any) If no error is caught, returns the returned values from `tryfunczzz`
 ]]
 local pcall_wrapper
-local rethrow_placeholder = "tryfunczzz" -- If changing this, make sure to do a search and replace for all instances in this file, including the argument to `rethrow_error`
+local rethrow_placeholder = "tryfunczzz" -- If changing this, make sure to do a search and replace for ALL instances in this file, including the argument to `call_and_rethrow`
 local pcall_line = debug.getinfo(1, "l").currentline + 2 -- This MUST refer to the pcall 2 lines below
-function utils.call_and_rethrow(levels, tryfunczzz, ...)
-    return pcall_wrapper(levels, pcall(function(...) return 1, tryfunczzz(...) end, ...))
+function utils.call_and_rethrow(opt, tryfunczzz, ...)
+    return pcall_wrapper(opt, pcall(function(...) return 1, tryfunczzz(...) end, ...))
     -- ^Tail calls aren't counted as levels in the call stack. Adding an additional return value (in this case, 1) forces this level to be included, which enables the error to be accurately captured
 end
 
@@ -233,50 +237,62 @@ if source_is_file then
 end
 
 -- Processes the results from the pcall in catch_and_rethrow
-pcall_wrapper = function(levels, success, result, ...)
-    if not success then
-        local file
-        local line
-        local msg
-        file, line, msg = result:match("([a-zA-Z]-:?[^:]+):([0-9]+): (.+)")
-        msg = msg or result
+pcall_wrapper = function(opt, success, result, ...)
+    if success then
+        return ...
+    end
 
-        local file_is_truncated = file and file:sub(1, 3) == "..."
-        file = file_is_truncated and file:sub(4) or file
+    if type("opt") == "number" then
+        opt = {levels = opt}
+    end
+    opt.levels = opt.levels or 1
 
-        -- Conditions for rethrowing at a higher level:
-        -- Ignore errors thrown with no level info (ie. level = 0), as we can't make any assumptions
-        -- Both the file and line number indicate that it was thrown at this level
-        if file
-            and line
-            and source_is_file
-            and (file_is_truncated and source:sub(-1 * file:len()) == file or file == source)
-            and tonumber(line) == pcall_line
-        then
-            local d = debug.getinfo(levels, "n")
+    local file
+    local line
+    local msg
+    file, line, msg = result:match("([a-zA-Z]-:?[^:]+):([0-9]+): (.+)")
+    msg = msg or result
 
-            -- Replace the method name with the correct one, for bad argument errors etc
-            msg = msg:gsub("'" .. rethrow_placeholder .. "'", "'" .. (d.name or "") .. "'")
+    local file_is_truncated = file and file:sub(1, 3) == "..."
+    file = file_is_truncated and file:sub(4) or file
+
+    -- Conditions for rethrowing at a higher level:
+    -- Ignore errors thrown with no level info (ie. level = 0), as we can't make any assumptions
+    -- Both the file and line number indicate that it was thrown at this level
+    if file
+        and line
+        and source_is_file
+        and (file_is_truncated and source:sub(-1 * file:len()) == file or file == source)
+        and tonumber(line) == pcall_line
+    then
+        local d = debug.getinfo(levels, "n")
+
+        -- Replace the method name with the correct one, for bad argument errors etc
+        msg = msg:gsub("'" .. rethrow_placeholder .. "'", "'" .. (d.name or "") .. "'")
+
+        local argument_number = msg:match("^bad argument #(%d+)")
+        if argument_number then
+            local new_argument_number = tonumber(argument_number)
+
+            if opt.arg_num_rewriter then
+                new_argument_number = opt.arg_num_rewriter(new_argument_number)
+            end
 
             -- Shift argument numbers down by one for colon function calls
             if d.namewhat == "method" then
-                local arg = msg:match("^bad argument #(%d+)")
-
-                if arg then
-                    msg = msg:gsub("#" .. arg, "#" .. tostring(tonumber(arg) - 1), 1)
-                end
+                new_argument_number = new_argument_number - 1
             end
 
-            error(msg, levels + 1)
-
-        -- Otherwise, it's either an internal function error or we couldn't be certain that it isn't
-        -- So, rethrow with original file and line number to be 'safe'
-        else
-            error(result, 0)
+            msg = msg:gsub("#" .. arg, "#" .. tostring(new_argument_number), 1)
         end
-    end
 
-    return ...
+        error(msg, levels + 1)
+
+    -- Otherwise, it's either an internal function error or we couldn't be certain that it isn't
+    -- So, rethrow with original file and line number to be 'safe'
+    else
+        error(result, 0)
+    end
 end
 
 --[[
