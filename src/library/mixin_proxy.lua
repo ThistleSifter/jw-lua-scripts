@@ -60,6 +60,13 @@ Creates a proxy for a getter method that expects an `FCString` parameter in whic
 ]]
 function mixin_proxy.fcstring_getter(func, argument_number, total_num_args, fcstr)
     func = resolve_func(func)
+    local rethrow_opt = {
+        level = 2,
+        arg_num_rewriter = function(arg_num)
+            return arg_num - (arg_num > argument_number and 1 or 0)
+        end,
+    }
+
     return function(self, ...)
         if select("#", ...) == total_num_args - 1 then
             return func(self, ...)
@@ -69,7 +76,7 @@ function mixin_proxy.fcstring_getter(func, argument_number, total_num_args, fcst
         table.pack(args, ...)
         local fcstring = fcstr or finale.FCString()
         table.insert(args, argument_number - 1, fcstring)
-        utils.catch_and_rethrow(2, func, table.unpack(args))
+        utils.catch_and_rethrow(rethrow_opt, func, table.unpack(args))
         return fcstring.LuaString
     end
 end
