@@ -1040,6 +1040,7 @@ finext = setmetatable({}, {
     is_xfx_class_name = private.is_xfx_class_name,
     fc_to_xfc_class_name = private.fc_to_xfc_class_name,
     xfc_to_fc_class_name = private.xfc_to_fc_class_name,
+    is_extension = function(extension) return extension_objects[extension] and true or false end,
 })
 
 return finext
