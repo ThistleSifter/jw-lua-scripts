@@ -13,6 +13,7 @@ $module xFCString
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
 local utils = require("library.utils")
+local library = require("library.general_library")
 
 local class = {Methods = {}, Properties = {}, StaticMethods = {}}
 local methods = class.Methods
@@ -366,5 +367,26 @@ props.LuaString = {
         self:SetLuaString(value)
     end,
 }
+
+--[[
+% ToxFCString
+
+Casts a value to an `xFCString` object. If an `xFCString` is passed it will be returned unaltered.
+To prevent a new `xFCString` object from being created, an existing `xFCString` can be optionally passed as the second parameter.
+
+@ value (any)
+@ [xfcstring] (xFCString)
+: (xFCString¹)
+]]
+function static.ToxFCString(value, xfcstring)
+    if finext_helper.is_extension(value) and value.ExtClassName == "xFCString" then
+        return value
+    elseif library.is_finale_object(value) and value:ClassName() == "FCString" then
+        value = value.LuaString
+    end
+
+    local str = xfcstring or finext.xFCString()
+    return str:SetLuaString(value)
+end
 
 return class
