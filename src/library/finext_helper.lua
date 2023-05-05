@@ -14,6 +14,70 @@ local finext_helper = {}
 
 local debug_enabled = finenv.DebugEnabled
 
+do
+    local meta = getmetatable(finext)
+
+--[[
+% is_fc_class_name
+
+Checks if a class name is an `FC` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+    finext_helper.is_fc_class_name = meta.is_fc_class_name
+
+--[[
+% is_xfc_class_name
+
+Checks if a class name is an `xFC` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+    finext_helper.is_xfc_class_name = meta.is_xfc_class_name
+
+--[[
+% is_xfx_class_name
+
+Checks if a class name is an `xFX` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+    finext_helper.is_xfx_class_name = meta.is_xfx_class_name
+
+--[[
+% fc_to_xfc_class_name
+
+Converts an `FC` class name to an `xFC` class name.
+
+@ class_name (string)
+: (string)
+]]
+    finext_helper.fc_to_xfc_class_name = meta.fc_to_xfc_class_name
+
+--[[
+% xfc_to_fc_class_name
+
+Converts an `xFC` class name to an `FC` class name.
+
+@ class_name (string)
+: (string)
+]]
+    finext_helper.xfc_to_fc_class_name = meta.xfc_to_fc_class_name
+
+--[[
+% is_extension
+
+Checks if the passed value is a `finext` extension.
+
+@ value (any)
+: (boolean)
+]]
+    finext_helper.is_extension = meta.is_extension
+end
+
 --[[
 % is_instance_of
 
@@ -32,10 +96,10 @@ function finext_helper.is_instance_of(object, ...)
     for i = 1, select("#", ...) do
         local class_name = select(i, ...)
         -- Skip over anything that isn't a class name (for easy integration with `assert_argument_type`)
-        if finext.IsFCClassName(class_name) then
+        if finext_helper.is_fc_class_name(class_name) then
             fc_class_names[class_name] = true
             has_fc = true
-        elseif finext.IsxFCClassName(class_name) or finext.IsxFXClassName(class_name) then
+        elseif finext_helper.is_xfc_class_name(class_name) or finext_helper.is_xfx_class_name(class_name) then
             ext_class_names[class_name] = true
             has_ext = true
         end
@@ -53,7 +117,7 @@ function finext_helper.is_instance_of(object, ...)
             end
             class_name = library.get_parent_class(class_name)
         end
-    elseif finext.IsExtension(object) then
+    elseif finext_helper.is_extension(object) then
         if not has_ext then
             return false
         end
@@ -91,7 +155,7 @@ local function assert_argument_type(levels, argument_number, value, ...)
     -- Determine type for error message
     if library.is_finale_object(value) then
         secondary_type = value.ClassName
-    elseif finext.IsExtension(value) then
+    elseif finext_helper.is_extension(value) then
         secondary_type = value.ExtClassName
     end
 
