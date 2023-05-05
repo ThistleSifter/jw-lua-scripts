@@ -513,6 +513,7 @@ end
 
 local allowed_metamethods = {
     __concat = "function",
+    __tostring = "function",
 }
 
 -- Loads an xFC or xFX extension class
