@@ -14,8 +14,9 @@ local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
 local utils = require("library.utils")
 
-local class = {Methods = {}}
+local class = {Methods = {}, Properties = {}}
 local methods = class.Methods
+local props = class.Properties
 
 -- Potential optimisation: reduce checked overrides to necessary minimum
 local unit_overrides = {
@@ -336,5 +337,27 @@ function methods:SetMeasurement10000th(value, measurementunit)
 
     finext.xFCString.SetMeasurement(self, utils.round(value) / 10000, measurementunit)
 end
+
+--[[
+% SetLuaString
+
+**[Fluid] [Override]**
+
+Override Changes:
+- Will accept any type, using the value resulting from a call to `tostring`
+- Also applies to `LuaString` property
+
+@ self (xFCString)
+@ str (any)
+]]
+function methods:SetLuaString(str)
+    self.__:SetLuaString(tostring(str))
+end
+
+props.LuaString = {
+    Set = function(self, value)
+        self.__.LuaString = tostring(value)
+    end,
+}
 
 return class
