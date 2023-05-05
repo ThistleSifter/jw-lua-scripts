@@ -14,9 +14,16 @@ local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
 local utils = require("library.utils")
 
-local class = {Methods = {}, Properties = {}}
+local class = {Methods = {}, Properties = {}, StaticMethods = {}}
 local methods = class.Methods
 local props = class.Properties
+local static = class.StaticMethods
+
+class.MetaMethods = {
+    __tostring = function(self)
+        return self.__.LuaString
+    end,
+}
 
 -- Potential optimisation: reduce checked overrides to necessary minimum
 local unit_overrides = {
@@ -356,7 +363,7 @@ end
 
 props.LuaString = {
     Set = function(self, value)
-        self.__.LuaString = tostring(value)
+        self:SetLuaString(value)
     end,
 }
 
