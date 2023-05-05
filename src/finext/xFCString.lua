@@ -391,4 +391,49 @@ function static.ToxFCString(value, xfcstring)
     return str:SetLuaString(value)
 end
 
+local measurement_suffixes = {
+    [finext.MEASUREMENTSUFFIX_SHORT] = {
+        [finale.MEASUREMENTUNIT_EVPUS] = "e",
+        [finale.MEASUREMENTUNIT_INCHES] = "i",
+        [finale.MEASUREMENTUNIT_CENTIMETERS] = "c",
+        [finale.MEASUREMENTUNIT_POINTS] = "pt",
+        [finale.MEASUREMENTUNIT_PICAS] = "p",
+        [finale.MEASUREMENTUNIT_SPACES] = "s",
+    },
+    [finext.MEASUREMENTSUFFIX_SYMBOL] = {
+        [finale.MEASUREMENTUNIT_EVPUS] = "ev",
+        [finale.MEASUREMENTUNIT_INCHES] = "in",
+        [finale.MEASUREMENTUNIT_CENTIMETERS] = "cm",
+        [finale.MEASUREMENTUNIT_POINTS] = "pt",
+        [finale.MEASUREMENTUNIT_PICAS] = "p",
+        [finale.MEASUREMENTUNIT_SPACES] = "sp",
+    },
+    [finext.MEASUREMENTSUFFIX_LONG] = {
+        [finale.MEASUREMENTUNIT_EVPUS] = "EVPUs",
+        [finale.MEASUREMENTUNIT_INCHES] = "inches",
+        [finale.MEASUREMENTUNIT_CENTIMETERS] = "centimeters",
+        [finale.MEASUREMENTUNIT_POINTS] = "points",
+        [finale.MEASUREMENTUNIT_PICAS] = "picas",
+        [finale.MEASUREMENTUNIT_SPACES] = "spaces",
+    },
+}
+
+--[[
+% GetMeasurementSuffix
+
+**[Static]**
+
+Returns a measurement suffix in the requested style for the specified unit.
+
+@ style (number) Any of the `finext.MEASUREMENTSUFFIX_*` constants.
+@ measurementunit (number) Any of the `finale.MEASUREMENTUNIT_*` constants.
+: (string)
+]]
+function static.GetMeasurementSuffix(style, measurementunit)
+    if measurementunit == finale.MEASUREMENTUNIT_DEFAULT then
+        measurementunit = finext.xFCUI.CalcDefaultMeasurementUnit()
+    end
+    return measurement_suffixes[style] and measurement_suffixes[style][measurementunit]
+end
+
 return class
