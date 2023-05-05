@@ -4,12 +4,45 @@
 $module xFCUI
 
 ## Summary of Modifications
+- `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 -- Added `CalcDefaultMeasurementUnit` for resolving `finale.MEASUREMENTUNIT_DEFAULT`
 ]] --
 local finext = require("library.finext")
+local finext_helper = require("library.finext_helper")
 
-local class = {StaticMethods = {}}
+local class = {Methods = {}, StaticMethods = {}}
+local methods = class.Methods
 local static = class.StaticMethods
+
+local temp_str = finext.xFCString()
+
+--[[
+% GetDecimalSeparator
+
+**[?Fluid] [Override]**
+
+Override Changes:
+- Passing an `FCString` is optional. If omitted, the result is returned as a Lua `string`. If passed, nothing is returned and the method is fluid.
+
+@ self (xFCUI)
+@ [str] (xFCString)
+: (string)
+]]
+function methods:GetDecimalSeparator(str)
+    finext_helper.assert_argument_type(2, str, "nil", "xFCString")
+
+    local do_return = false
+    if not str then
+        str = temp_str
+        do_return = true
+    end
+
+    self.__:GetDecimalSeparator(str.__)
+
+    if do_return then
+        return str.LuaString
+    end
+end
 
 --[[
 % CalcDefaultMeasurementUnit
