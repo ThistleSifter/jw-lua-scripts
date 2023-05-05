@@ -1020,68 +1020,6 @@ function public.UI()
     return private.create_extension(finenv.UI(), "xFCUI")
 end
 
---[[
-% IsFCClassName
-
-Checks if a class name is an `FC` class name.
-
-@ class_name (string)
-: (boolean)
-]]
-public.IsFCClassName = private.is_fc_class_name
-
---[[
-% IsxFCClassName
-
-Checks if a class name is an `xFC` class name.
-
-@ class_name (string)
-: (boolean)
-]]
-public.IsxFCClassName = private.is_xfc_class_name
-
---[[
-% IsxFXClassName
-
-Checks if a class name is an `xFX` class name.
-
-@ class_name (string)
-: (boolean)
-]]
-public.IsxFXClassName = private.is_xfx_class_name
-
---[[
-% FCToxFCClassName
-
-Converts an `FC` class name to an `xFC` class name.
-
-@ class_name (string)
-: (string)
-]]
-public.FCToxFCClassName = private.fc_to_xfc_class_name
-
---[[
-% xFCToFCClassName
-
-Converts an `xFC` class name to an `FC` class name.
-
-@ class_name (string)
-: (string)
-]]
-public.xFCToFCClassName = private.xfc_to_fc_class_name
-
---[[
-% IsExtension
-
-Checks if the passed value is a `finext` extension.
-
-@ value (any)
-: (boolean)
-]]
-function public.IsExtension(value)
-    return extension_objects[value] and true or false
-end
-
 finext = setmetatable({}, {
     __newindex = function(t, k, v) end,
     __index = function(t, k)
@@ -1127,6 +1065,14 @@ finext = setmetatable({}, {
         end
         error("bad argument #1 to 'finext' (__FCBase or __xFCBase expected, " .. type(object) .. " given)", 2)
     end,
+
+    -- Stash these here so they can be added to finext_helper
+    is_fc_class_name = private.is_fc_class_name,
+    is_xfc_class_name = private.is_xfc_class_name,
+    is_xfx_class_name = private.is_xfx_class_name,
+    fc_to_xfc_class_name = private.fc_to_xfc_class_name,
+    xfc_to_fc_class_name = private.xfc_to_fc_class_name,
+    is_extension = function(value) return extension_objects[value] and true or false end,
 })
 
 local function load_constants(mod_name)
