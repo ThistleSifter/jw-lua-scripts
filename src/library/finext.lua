@@ -384,6 +384,37 @@ return class
 If you've written extensions for your personal use and don't want to submit them to the Finale Lua repository, you can place them in a folder called `personal_finext`, next to the `finext` folder.
 
 Personal extensions take precedence over public extensions, so if an extension with the same name exists in both folders, the one in the `personal_finext` folder will be used.
+
+
+## Constants
+The `finext` library also supports adding custom constants to the `finext` namespace. Constants should be defined in a file called `__CONSTANTS.lua` which can be placed in either the `finext` or `personal_finext` directory.
+Constants are loaded automatically by the library.
+
+The name of a constant can only contain uppercase letters and underscores and must start and end with a letter.
+
+**Note that unlike extensions, constants cannot be overridden and if a constant is defined in more than one place, an error will be thrown.**
+
+The `__CONSTANTS.lua` file should adhere to the followong format:
+```lua
+-- Return a table of constants
+return {
+    -- A constant group (all constants must go in groups)
+    MEASUREMENTSUFFIX = {
+        -- Individual constant values (names will be appended to the group name separated by an underscore)
+        SHORT = 1, -- MEASUREMENTSUFFIX_SHORT
+        FULL = 2, -- MEASUREMENTSUFFIX_FULL
+    },
+    -- Define as many constant groups as needed
+}
+```
+
+Accessing constants:
+```lua
+local finext = require("library.finext")
+...
+...
+ctrl:SetMeasurementSuffixStyle(finext.MEASUREMENTSUFFIX_FULL)
+```
 ]]
 local utils = require("library.utils")
 local library = require("library.general_library")
@@ -988,6 +1019,68 @@ function public.UI()
     return private.create_extension(finenv.UI(), "xFCUI")
 end
 
+--[[
+% IsFCClassName
+
+Checks if a class name is an `FC` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+public.IsFCClassName = private.is_fc_class_name
+
+--[[
+% IsxFCClassName
+
+Checks if a class name is an `xFC` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+public.IsxFCClassName = private.is_xfc_class_name
+
+--[[
+% IsxFXClassName
+
+Checks if a class name is an `xFX` class name.
+
+@ class_name (string)
+: (boolean)
+]]
+public.IsxFXClassName = private.is_xfx_class_name
+
+--[[
+% FCToxFCClassName
+
+Converts an `FC` class name to an `xFC` class name.
+
+@ class_name (string)
+: (string)
+]]
+public.FCToxFCClassName = private.fc_to_xfc_class_name
+
+--[[
+% xFCToFCClassName
+
+Converts an `xFC` class name to an `FC` class name.
+
+@ class_name (string)
+: (string)
+]]
+public.xFCToFCClassName = private.xfc_to_fc_class_name
+
+--[[
+% IsExtension
+
+Checks if the passed value is a `finext` extension.
+
+@ value (any)
+: (boolean)
+]]
+function public.IsExtension(value)
+    return extension_objects[value] and true or false
+end
+
 finext = setmetatable({}, {
     __newindex = function(t, k, v) end,
     __index = function(t, k)
@@ -1033,14 +1126,36 @@ finext = setmetatable({}, {
         end
         error("bad argument #1 to 'finext' (__FCBase or __xFCBase expected, " .. type(object) .. " given)", 2)
     end,
-
-    -- Stash these here so that they can be added to finext_helper
-    is_fc_class_name = private.is_fc_class_name,
-    is_xfc_class_name = private.is_xfc_class_name,
-    is_xfx_class_name = private.is_xfx_class_name,
-    fc_to_xfc_class_name = private.fc_to_xfc_class_name,
-    xfc_to_fc_class_name = private.xfc_to_fc_class_name,
-    is_extension = function(extension) return extension_objects[extension] and true or false end,
 })
+
+local function load_constants(mod_name)
+    local success
+    local result
+    success, result = try_load_module(mod_name)
+    if not success then
+        return
+    end
+
+    local function assert_valid_name(name, err_name, err_path)
+        if not string.match(name, "^%u+") and not string.match(name, "^%u[%u_]-%u$") then
+            error("Constant " .. err_name .. " can only contain uppercase letters and underscores and cannot start or end with an underscore, '" .. tostring(name) .. "' given (" .. mod_name .. (err_path or "")  .. ")", 0)
+        end
+    end
+
+    for k, v in pairs(result) do
+        assert_valid_name(kk, "group names")
+        for kk, vv in pairs(v) do
+            assert_valid_name(kk, "names", "." .. k)
+            local const = k .. "_" .. kk
+            if public[const] ~= nil then
+                error("A constant named '" .. const .. "' already exists and cannot be overridden (" .. mod_name .. "." .. k .. "." .. kk .. ")" , 0)
+            end
+            public[const] = vv
+        end
+    end
+end
+
+load_constants("finext.__CONSTANTS")
+load_constants("personal_finext.__CONSTANTS")
 
 return finext
