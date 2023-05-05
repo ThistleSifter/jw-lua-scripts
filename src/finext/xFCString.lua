@@ -371,6 +371,8 @@ props.LuaString = {
 --[[
 % ToxFCString
 
+**[Static]**
+
 Casts a value to an `xFCString` object. If an `xFCString` is passed it will be returned unaltered.
 To prevent a new `xFCString` object from being created, an existing `xFCString` can be optionally passed as the second parameter.
 
