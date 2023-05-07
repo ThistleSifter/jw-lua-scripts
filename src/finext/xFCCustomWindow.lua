@@ -382,12 +382,12 @@ Override Changes:
 - Hooks into control state preservation.
 
 @ self (xFCCustomWindow)
-@ horizoffset (integer)
-@ vertoqffset (integer)
+@ horizoffset (number)
+@ vertoffset (number)
 ]]
 function methods:MoveAllControls(horizoffset, vertoffset)
-    finext_helper.assert_argument_type(2, horizoffset, "integer")
-    finext_helper.assert_argument_type(3, vertoffset, "integer")
+    finext_helper.assert_argument_type(2, horizoffset, "number")
+    finext_helper.assert_argument_type(3, vertoffset, "number")
 
     for ctrl in each(self) do
         ctrl:MoveRelative(horizoffset, vertoffset)
