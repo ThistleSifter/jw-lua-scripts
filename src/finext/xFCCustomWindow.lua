@@ -374,7 +374,7 @@ function method:CreateRadioButtonGroup(x, y, no_of_items, control_name, ...)
     group:RegisterParent(self)
     return group
 end
-1
+
 --[[
 % MoveAllControls
 
