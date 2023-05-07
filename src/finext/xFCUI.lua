@@ -60,7 +60,7 @@ local measurementunits = {
 
 **[Static]**
 
-Checks if a number is equal to one of the `finale.MEASUREMENTUNIT_*` constants.
+Checks if the value is equal to one of the `finale.MEASUREMENTUNIT_*` constants.
 
 @ measurementunit (number) The unit to check.
 : (boolean) `true` if valid, `false` if not.
@@ -74,13 +74,33 @@ end
 
 **[Static]**
 
-Checks if a number is equal to one of the `finale.MEASUREMENTUNIT_*` constants, excluding ones for internal use only (eg `finale.MEASUREMENTUNIT_MILLIMETERS`).
+Checks if the value is equal to one of the `finale.MEASUREMENTUNIT_*` constants that appears in Finale's user interface.
+Internal measurement units (ie`finale.MEASUREMENTUNIT_MILLIMETERS`) and `finale.MEASUREMENTUNIT_DEFAULT` are excluded.
 
 @ measurementunit (number) The unit to check.
 : (boolean) `true` if valid, `false` if not.
 ]]
 function static.IsDisplayMeasurementUnit(measurementunit)
     return measurementunit ~= finale.MEASUREMENTUNIT_MILLIMETERS and measurementunits[measurementunit] and true or false
+end
+
+--[[
+% GetDisplayMeasurementUnits
+
+Returns a list of measurement units that are available in Finale's user interface in the order that they appear.
+
+*Note: `finale.MEASUREMENTUNIT_DEFAULT` is not included in this list*
+
+]]
+function static.GetDisplayMeasurementUnits()
+    return {
+        finale.MEASUREMENTUNIT_INCHES,
+        finale.MEASUREMENTUNIT_CENTIMETERS,
+        finale.MEASUREMENTUNIT_POINTS,
+        finale.MEASUREMENTUNIT_PICAS,
+        finale.MEASUREMENTUNIT_SPACES,
+        finale.MEASUREMENTUNIT_EVPUS,
+    }
 end
 
 --[[
