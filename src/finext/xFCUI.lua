@@ -44,6 +44,45 @@ function methods:GetDecimalSeparator(str)
     end
 end
 
+local measurementunits = {
+    [finale.MEASUREMENTUNIT_DEFAULT] = true,
+    [finale.MEASUREMENTUNIT_EVPUS] = true,
+    [finale.MEASUREMENTUNIT_INCHES] = true,
+    [finale.MEASUREMENTUNIT_CENTIMETERS] = true,
+    [finale.MEASUREMENTUNIT_POINTS] = true,
+    [finale.MEASUREMENTUNIT_PICAS] = true,
+    [finale.MEASUREMENTUNIT_SPACES] = true,
+    [finale.MEASUREMENTUNIT_MILLIMETERS] = true,
+}
+
+--[[
+% IsMeasurementUnit
+
+**[Static]**
+
+Checks if a number is equal to one of the `finale.MEASUREMENTUNIT_*` constants.
+
+@ measurementunit (number) The unit to check.
+: (boolean) `true` if valid, `false` if not.
+]]
+function static.IsMeasurementUnit(measurementunit)
+    return measurementunits[measurementunit] and true or false
+end
+
+--[[
+% IsDisplayMeasurementUnit
+
+**[Static]**
+
+Checks if a number is equal to one of the `finale.MEASUREMENTUNIT_*` constants, excluding ones for internal use only (eg `finale.MEASUREMENTUNIT_MILLIMETERS`).
+
+@ measurementunit (number) The unit to check.
+: (boolean) `true` if valid, `false` if not.
+]]
+function static.IsDisplayMeasurementUnit(measurementunit)
+    return measurementunit ~= finale.MEASUREMENTUNIT_MILLIMETERS and measurementunits[measurementunit] and true or false
+end
+
 --[[
 % CalcDefaultMeasurementUnit
 
