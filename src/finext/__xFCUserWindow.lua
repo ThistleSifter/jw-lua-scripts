@@ -4,8 +4,8 @@
 $module __xFCUserWindow
 
 ## Summary of Modifications
-- Setters that accept `FCString` will also accept a Lua `string`.
-- `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
+- Setters that accept `xFCString` will also accept a Lua `string`.
+- `xFCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
@@ -21,7 +21,7 @@ local temp_str = finext.xFCString()
 **[?Fluid] [Override]**
 
 Override Changes:
-- Passing an `FCString` is optional. If omitted, the result is returned as a Lua `string`. If passed, nothing is returned and the method is fluid.
+- Passing an `xFCString` is optional. If omitted, the result is returned as a Lua `string`. If passed, nothing is returned and the method is fluid.
 
 @ self (__xFCUserWindow)
 @ [title] (xFCString)
@@ -49,7 +49,7 @@ end
 **[Fluid] [Override]**
 
 Override Changes:
-- Accepts Lua `string` or `number` in addition to `FCString`.
+- Accepts Lua `string` or `number` in addition to `xFCString`.
 
 @ self (__xFCMserWindow)
 @ title (xFCString | string | number)
