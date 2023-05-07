@@ -427,6 +427,7 @@ local measurement_suffixes = {
 **[Static]**
 
 Returns a measurement suffix in the requested style for the specified unit.
+All possible returned values are also valid measurement unit overrides.
 
 @ style (number) Any of the `finext.MEASUREMENTSUFFIX_*` constants.
 @ measurementunit (number) Any of the `finale.MEASUREMENTUNIT_*` constants.
