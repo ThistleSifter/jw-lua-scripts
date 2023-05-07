@@ -9,6 +9,7 @@ $module xFCString
 - Added `GetMeasurementInteger`, `GetRangeMeasurementInteger` and `SetMeasurementInteger` methods for parity with `FCCtrlEdit`
 - Added `GetMeasurementEfix`, `GetRangeMeasurementEfix` and `SetMeasurementEfix methods for parity with `FCCtrlEdit`
 - Added `*Measurement10000th` methods for setting and retrieving values in 10,000ths of an EVPU (eg for piano brace settings, slur tip width, etc)
+--Added optional parameter to all `SetMeasurement*` methods that allows a suffix to be displayed.
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
@@ -155,14 +156,21 @@ end
 Override Changes:
 - Fixes issue with displayed numbers being truncated at 2 decimal places.
 - Emulates the behaviour of `FCCtrlEdit.SetMeasurement` on Windows while the window is showing.
+- Added optional parameter to add a suffix after the dis1played measurement.
 
 @ self (xFCString)
 @ value (number) The value to set in EVPUs.
 @ measurementunit (number) One of the `finale.MEASUREMENTUNIT_*` constants.
+@ [measurementsuffix] (number) One of the `finext.MEASUREMENTSUFFIX_*` constants.
 ]]
-function methods:SetMeasurement(value, measurementunit)
+function methods:SetMeasurement(value, measurementunit, measurementsuffix)
     finext_helper.assert_argument_type(2, value, "number")
     finext_helper.assert_argument_type(3, measurementunit, "number")
+    finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
+
+    if measurementunit == finale.MEASUREMENTUNIT_DEFAULT then
+        measurementunit = finext.xFCUI.CalcDefaultMeasurementUnit()
+    end
 
     if measurementunit == finale.MEASUREMENTUNIT_PICAS then
         local whole = math.floor(value / 48)
@@ -172,7 +180,7 @@ function methods:SetMeasurement(value, measurementunit)
         return
     end
 
-    -- Invalid measurement units are treated the same as EVPUs (ie just set the raw value) in `FCCtrlEdit`
+    -- Invalid measurement units are treated the same as EVPUs in `FCCtrlEdit` (ie just set the raw value)
     if measurementunit == finale.MEASUREMENTUNIT_INCHES then
         value = value / 288
     elseif measurementunit == finale.MEASUREMENTUNIT_CENTIMETERS then
@@ -186,6 +194,10 @@ function methods:SetMeasurement(value, measurementunit)
     end
 
     self.LuaString = tostring(utils.to_integer_if_whole(utils.round(value, 5)))
+
+    if measurementsuffix then
+        self:AppendLuaString(finext.xFCString.GetMeasurementSuffix(measurementunit, measurementsuffix))
+    end
 end
 
 --[[
@@ -233,10 +245,12 @@ Sets a measurement in whole EVPUs.
 @ self (xFCString)
 @ value (number) The value in whole EVPUs.
 @ measurementunit (number) One of the `finale.MEASUREMENTUNIT*_` constants.
+@ [measurementsuffix] (number) One of the `finext.MEASUREMENTSUFFIX_*` constants.
 ]]
-function methods:SetMeasurementInteger(value, measurementunit)
+function methods:SetMeasurementInteger(value, measurementunit, measurementsuffix)
     finext_helper.assert_argument_type(2, value, "number")
     finext_helper.assert_argument_type(3, measurementunit, "number")
+    finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
     finext.xFCString.SetMeasurement(self, utils.round(value), measurementunit)
 end
@@ -285,10 +299,12 @@ Sets a measurement in whole EFIXes.
 @ self (xFCString)
 @ value (number) The value in EFIXes (1/64th of an EVPU)
 @ measurementunit (number) One of the `finale.MEASUREMENTUNIT*_` constants.
+@ [measurementsuffix] (number) One of the `finext.MEASUREMENTSUFFIX_*` constants.
 ]]
-function methods:SetMeasurementEfix(value, measurementunit)
+function methods:SetMeasurementEfix(value, measurementunit, measurementsuffix)
     finext_helper.assert_argument_type(2, value, "number")
     finext_helper.assert_argument_type(3, measurementunit, "number")
+    finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
     finext.xFCString.SetMeasurement(self, utils.round(value) / 64, measurementunit)
 end
@@ -338,10 +354,12 @@ Sets a measurement in 10,000ths of an EVPU.
 @ self (xFCString)
 @ value (number) The value in 10,000ths of an EVPU.
 @ measurementunit (number) One of the `finale.MEASUREMENTUNIT*_` constants.
+@ [measurementsuffix] (number) One of the `finext.MEASUREMENTSUFFIX_*` constants.
 ]]
 function methods:SetMeasurement10000th(value, measurementunit)
     finext_helper.assert_argument_type(2, value, "number")
     finext_helper.assert_argument_type(3, measurementunit, "number")
+    finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
     finext.xFCString.SetMeasurement(self, utils.round(value) / 10000, measurementunit)
 end
