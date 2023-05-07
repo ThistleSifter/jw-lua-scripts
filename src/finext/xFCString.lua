@@ -399,6 +399,7 @@ local measurement_suffixes = {
         [finale.MEASUREMENTUNIT_POINTS] = "pt",
         [finale.MEASUREMENTUNIT_PICAS] = "p",
         [finale.MEASUREMENTUNIT_SPACES] = "s",
+        [finale.MEASUREMENTUNIT_MILLIMETERS] = "m",
     },
     [finext.MEASUREMENTSUFFIX_SYMBOL] = {
         [finale.MEASUREMENTUNIT_EVPUS] = "ev",
@@ -407,14 +408,16 @@ local measurement_suffixes = {
         [finale.MEASUREMENTUNIT_POINTS] = "pt",
         [finale.MEASUREMENTUNIT_PICAS] = "p",
         [finale.MEASUREMENTUNIT_SPACES] = "sp",
+        [FINALE.MEASUREMENTUNIT_MILLIMETERS] = "mm",
     },
-    [finext.MEASUREMENTSUFFIX_LONG] = {
+    [finext.MEASUREMENTSUFFIX_FULLNAME] = {
         [finale.MEASUREMENTUNIT_EVPUS] = "EVPUs",
         [finale.MEASUREMENTUNIT_INCHES] = "inches",
         [finale.MEASUREMENTUNIT_CENTIMETERS] = "centimeters",
         [finale.MEASUREMENTUNIT_POINTS] = "points",
         [finale.MEASUREMENTUNIT_PICAS] = "picas",
         [finale.MEASUREMENTUNIT_SPACES] = "spaces",
+        [finale.MEASUREMENTUNIT_MILLIMETERS] = "millimeters",
     },
 }
 
