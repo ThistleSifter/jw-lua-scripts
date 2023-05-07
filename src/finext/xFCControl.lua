@@ -8,7 +8,7 @@ $module xFCControl
 - `xFCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 - Ported `GetParent` from PDK to allow the parent window to be accessed from a control.
 - Added methods to allow handlers for the `Command` event to be set directly on the control.
-- Added methods for storing and restoring control state, allowing controls to preserve their values across multiple script executions.
+- Added methods for storing and restoring control state, allowing controls to preserve their values across multiple script executions (only works if parent is `xFCCustomLuaWindow`).
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
@@ -310,6 +310,50 @@ function methods:SetText(str)
 end
 
 --[[
+% MoveRelative
+
+**[Fluid] [Override]**
+
+Override Changes:
+- Hooks into control state preservation.
+- Polyfill for RGPLua < v0.61.
+- Can be called when window is not showing.
+
+@ self (xFCControl)
+@ horizmove (number)
+@ vertmove (number)
+]]
+function methods:MoveRelative(horizmove, vertmove)
+    finext_helper.assert_argument_type(2, horizmove, "number")
+    finext_helper.assert_argument_type(3, vertmove, "number")
+
+    finext.xFCControl.SetLeft(self, finext.xFCControl.GetLeft(self) + horizmove)
+    finext.xFCControl.SetTop(self, finext.xFCControl.GetTop(self) + vertmove)
+end
+
+--[[
+% ResizeRelative
+
+**[Fluid] [Override]**
+
+Override Changes:
+- Hooks into control state preservation.
+- Polyfill for RGPLua < v0.63.
+- Can be called when window is not showing.
+
+@ self (xFCControl)
+@ horizresize (number)
+@ vertresize (number)
+]]
+function methods:MoveRelative(horizresize, vertresize)
+    finext_helper.assert_argument_type(2, horizresize, "number")
+    finext_helper.assert_argument_type(3, vertresize, "number")
+
+    finext.xFCControl.SetWidth(self, finext.xFCControl.GetWidth(self) + horizresize)
+    finext.xFCControl.SetHeight(self, finext.xFCControl.GetHeight(self) + vertresize)
+end
+
+--[[
 % UseStoredControlState
 
 **[Internal]**
@@ -327,7 +371,7 @@ function methods:UseStoredControlState()
 end
 
 --[[
-% StoreState
+% StoreControlState
 
 **[Fluid] [Internal]**
 
@@ -337,7 +381,7 @@ Stores the control's current state.
 
 @ self (xFCControl)
 ]]
-function methods:StoreState()
+function methods:StoreControlState()
     self.__:GetText(temp_str.__)
     private[self].Text = temp_str.LuaString
     private[self].Enable = self.__:GetEnable()
@@ -349,7 +393,7 @@ function methods:StoreState()
 end
 
 --[[
-% RestoreState
+% RestoreControlState
 
 **[Fluid] [Internal]**
 
@@ -359,7 +403,7 @@ Restores the control's stored state.
 
 @ self (xFCControl)
 ]]
-function methods:RestoreState()
+function methods:RestoreControlState()
     self.__:SetEnable(private[self].Enable)
     self.__:SetVisible(private[self].Visible)
     self.__:SetLeft(private[self].Left)
