@@ -1068,22 +1068,22 @@ Sets the window's current measurement unit. Millimeters are not supported.
 All controls that have an `UpdateMeasurementUnit` method will have that method called to allow them to immediately update their displayed measurement unit immediately without needing to wait for a `MeasurementUnitChange` event.
 
 @ self (xFCCustomLuaWindow)
-@ unit (number) One of the finale MEASUREMENTUNIT constants.
+@ measurementunit (number) One of the finale MEASUREMENTUNIT constants.
 ]]
-function methods:SetMeasurementUnit(unit)
-    finext_helper.assert_argument_type(2, unit, "number")
+function methods:SetMeasurementUnit(measurementunit)
+    finext_helper.assert_argument_type(2, measurementunit, "number")
 
-    if unit == private[self].MeasurementUnit then
+    if measurementunit == private[self].MeasurementUnit then
         return
     end
 
-    if unit == finale.MEASUREMENTUNIT_DEFAULT then
-        unit = finext.xFCUI.CalcDefaultMeasurementUnit()
+    if measurementunit == finale.MEASUREMENTUNIT_DEFAULT then
+        measurementunit = finext.xFCUI.CalcDefaultMeasurementUnit()
     end
 
-    finext_helper.force_assert(finext.xFCUI.IsDisplayMeasurementUnit(unit), "Measurement unit is not valid.")
+    finext_helper.force_assert(finext.xFCUI.IsDisplayMeasurementUnit(measurementunit), "Measurement unit is not valid.")
 
-    private[self].MeasurementUnit = unit
+    private[self].MeasurementUnit = measurementunit
 
     -- Update all measurement controls
     for ctrl in each(self) do
