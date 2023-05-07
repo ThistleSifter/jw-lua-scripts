@@ -5,7 +5,7 @@ $module xFCUI
 
 ## Summary of Modifications
 - `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
--- Added `CalcDefaultMeasurementUnit` for resolving `finale.MEASUREMENTUNIT_DEFAULT`
+-- Added numerous static methods for handling measurement units.
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
@@ -75,7 +75,7 @@ end
 **[Static]**
 
 Checks if the value is equal to one of the `finale.MEASUREMENTUNIT_*` constants that appears in Finale's user interface.
-Internal measurement units (ie`finale.MEASUREMENTUNIT_MILLIMETERS`) and `finale.MEASUREMENTUNIT_DEFAULT` are excluded.
+Internal measurement units (ie`finale.MEASUREMENTUNIT_MILLIMETERS`) and `finale.MEASUREMENTUNIT_DEFAULT` are excluded and will return `false`.
 
 @ measurementunit (number) The unit to check.
 : (boolean) `true` if valid, `false` if not.
@@ -86,6 +86,8 @@ end
 
 --[[
 % GetDisplayMeasurementUnits
+
+**[Static]**
 
 Returns a list of measurement units that are available in Finale's user interface in the order that they appear.
 
