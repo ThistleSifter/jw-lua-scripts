@@ -4,6 +4,6 @@ return {
     MEASUREMENTSUFFIX = {
         SHORT = 1,
         SYMBOL = 2,
-        LONG = 3,
+        FULLNAME = 3,
     },
 }
