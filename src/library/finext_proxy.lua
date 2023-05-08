@@ -30,7 +30,7 @@ The proxy will accept any value in place of the `xFCString`, casting them to an 
 
 @ func (string | function) The function to proxy. Can be either the name of the original method to be called on the `self` object or a function.
 @ argument_number (number) The real argument number of the `xFCString` parameter (`self` is argument #1).
-@ xfcstr [xFCString] Optional `xFCString` object that can be reused for casting.
+@ [xfcstr] (xFCString) Optional `xFCString` object that can be reused for casting.
 : (function) Extension proxy method.
 ]]
 function finext_proxy.xfcstring_setter(func, argument_number, xfcstr)
@@ -55,7 +55,7 @@ Creates a proxy for a getter method that expects an `xFCString` parameter in whi
 @ func (string | function) The function to proxy. Can be either the name of the original method to be called on the `self` object or a function.
 @ argument_number (number) The real argument number of the `xFCString` parameter (`self` is argument #1).
 @ total_num_args (number) The total number of expected arguments, including the `xFCString` argument.
-@ xfcstr [FCString] Optional `xFCString` object to be reused as the inserted parameter.
+@ [xfcstr] (FCString) Optional `xFCString` object to be reused as the inserted parameter.
 : (function) Extension proxy method.
 ]]
 function finext_proxy.xfcstring_getter(func, argument_number, total_num_args, xfcstr)
