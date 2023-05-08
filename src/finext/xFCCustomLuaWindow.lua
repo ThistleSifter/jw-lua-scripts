@@ -689,16 +689,11 @@ Override Changes:
 @ control (xFCControl)
 @ callback (function) See `FCCustomLuaWindow.HandleControlEvent` in the PDK for callback signature.
 ]]
-    function methods:RegisterHandleControlEvent(control, callback)
-        finext_helper.assert_argument_type(2, control, "xFCControl")
-        finext_helper.assert_argument_type(3, callback, "function")
-
-        if not self.__:RegisterHandleControlEvent(control.__, function()
+    methods.RegisterHandleControlEvent = finext_proxy.boolean_to_error(function(self, control, callback)
+        return utils.call_and_rethrow(2, self.__.RegisterHandleControlEvent, self.__, control.__, function()
             callback(control)
-        end) then
-            error("'RegisterHandleControlEvent' has encountered an error.", 2)
-        end
-    end
+        end)
+    end)
 end
 
 if finenv.MajorVersion > 0 or finenv.MinorVersion >= 56 then
@@ -833,6 +828,8 @@ Sets a timer using the next available ID (according to `GetNextTimerID`) and ret
 
         return timerid
     end
+
+    -- Note: StopTimer does not need to be overridden
 end
 
 if finenv.MajorVersion > 0 or finenv.MinorVersion >= 60 then
