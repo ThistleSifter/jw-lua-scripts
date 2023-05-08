@@ -44,9 +44,9 @@ local function flush_custom_queue(self)
 end
 
 local function restore_position(self)
-    if private[self].HasBeenShown and private[self].EnableAutoRestorePosition and self.StorePosition then
+    if private[self].HasBeenShown and private[self].EnableAutoRestorePosition and self.__.StorePosition then
         self:StorePosition(false)
-        self:SetRestorePositionOnlyData__(private[self].StoredX, private[self].StoredY)
+        self.__:SetRestorePositionOnlyData(private[self].StoredX, private[self].StoredY)
         self:RestorePosition()
     end
 end
@@ -178,7 +178,7 @@ function class:Init()
                 -- Catch any errors so they don't disrupt storing window position and control state
                 local success, error_msg = pcall(dispatch_event_handlers, self, event, self, ...)
 
-                if self.StorePosition then
+                if self.__.StorePosition then
                     self:StorePosition(false)
                     private[self].StoredX = self.StoredX
                     private[self].StoredY = self.StoredY
@@ -851,7 +851,7 @@ This is enabled by default.
     function methods:SetEnableAutoRestorePosition(enabled)
         finext_helper.assert_argument_type(2, enabled, "boolean")
 
-        private[self].EnableAutoRestorePosition = enabled
+        private[self].EnableAutoRestorePosition = enabled and true or false
     end
 
 --[[
@@ -883,12 +883,8 @@ Override Changes:
 @ height (number)
 ]]
     function methods:SetRestorePositionData(x, y, width, height)
-        finext_helper.assert_argument_type(2, x, "number")
-        finext_helper.assert_argument_type(3, y, "number")
-        finext_helper.assert_argument_type(4, width, "number")
-        finext_helper.assert_argument_type(5, height, "number")
-
-        self:SetRestorePositionOnlyData__(x, y, width, height)
+        -- Let the original method take care of argument validation
+        utils.call_and_rethrow(2, self.__.SetRestorePositionOnlyData, self.__, x, y, width, height)
 
         if private[self].HasBeenShown and not self:WindowExists() then
             private[self].StoredX = x
@@ -909,10 +905,7 @@ Override Changes:
 @ y (number)
 ]]
     function methods:SetRestorePositionOnlyData(x, y)
-        finext_helper.assert_argument_type(2, x, "number")
-        finext_helper.assert_argument_type(3, y, "number")
-
-        self:SetRestorePositionOnlyData__(x, y)
+        utils.call_and_rethrow(2, self.__.SetRestorePositionOnlyData, self.__, x, y)
 
         if private[self].HasBeenShown and not self:WindowExists() then
             private[self].StoredX = x
@@ -928,7 +921,7 @@ end
 
 If enabled and in debug mode, when the window is closed with either ALT or SHIFT key pressed, `finenv.RetainLuaState` will be set to `false`.
 This is done before CloseWindow handlers are called.
-This is disabled by default.
+This is enabled by default.
 
 @ self (xFCCustomLuaWindow)
 @ enabled (boolean)
@@ -957,7 +950,7 @@ end
 Checks if the window has been shown at least once prior, either as a modal or modeless.
 
 @ self (xFCCustomLuaWindow)
-: (boolean) `true` if it has been shown, `false` if not
+: (boolean) `true` if it has been shown, `false` if not or if it is currently being shown for the first time.
 ]]
 function methods:HasBeenShown()
     return private[self].HasBeenShown
@@ -998,9 +991,9 @@ Override Changes:
 : (boolean)
 ]]
 function methods:ShowModeless()
-    finenv.RegisterModelessDialog(self)
+    finenv.RegisterModelessDialog(self.__)
     restore_position(self)
-    return self:ShowModeless__()
+    return self.__:ShowModeless()
 end
 
 --[[
@@ -1160,7 +1153,7 @@ Removes a handler added with `AddHandleMeasurementUnitChange`.
 @ self (xFCCustomLuaWindow)
 @ callback (function)
 ]]
-methods.AddHandleMeasurementUnitChange, methods.RemoveHandleMeasurementUnitChange, trigger_measurement_unit_change, each_last_measurement_unit_change = finext_helper.create_custom_window_change_event(
+methods.AddHandleMeasurementUnitChange, methods.RemoveHandleMeasurementUnitChange, trigger_measurement_unit_change, each_last_measurement_unit_change = finext.xFCCustomLuaWindow.CreateCustomWindowChangeEvent(
     {
         name = "last_unit",
         get = function(window)
