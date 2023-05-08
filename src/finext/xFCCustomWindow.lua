@@ -6,13 +6,18 @@ $module xFCCustomWindow
 ## Summary of Modifications
 - `Create*` methods have an additional optional parameter for specifying a control name. Named controls can be retrieved via `GetControl`.
 - Cache original control objects to preserve extension data and override control getters to return the original objects.
+- Setters that accept `xFCString` will also accept a Lua `string`.
+- `xFCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
+local finext_proxy = require("library.finext_proxy")
 
 local class = {Methods = {}}
 local methods = class.Methods
 local private = setmetatable({}, {__mode = "k"})
+
+local temp_str = finext.xFCString()
 
 local function set_control_name(self, control, control_name, error_level)
     control_name = tostring(control_name)
@@ -459,6 +464,33 @@ Returns the parent window. The parent will only be available while the window is
 function methods:GetParent()
     return private[self].Parent
 end
+
+--[[
+% GetTitle
+
+**[?Fluid] [Override]**
+
+Override Changes:
+- Passing an `xFCString` is optional. If omitted, the result is returned as a Lua `string`. If passed, nothing is returned and the method is fluid.
+
+@ self (xFCCustomWindow)
+@ [title] (xFCString)
+: (string) Returned if `title` is omitted.
+]]
+methods.GetTitle = mixin_proxy.xcfstring_getter("GetTitle", 2, 2, temp_str)
+
+--[[
+% SetTitle
+
+**[Fluid] [Override]**
+
+Override Changes:
+- Accepts Lua `string` or `number` in addition to `xFCString`.
+
+@ self (xFCCustomWindow)
+@ title (xFCString | string | number)
+]]
+methods.SetTitle = mixin_proxy.xfcstring_setter("SetTitle", 2, temp_str)
 
 --[[
 % ExecuteModal
