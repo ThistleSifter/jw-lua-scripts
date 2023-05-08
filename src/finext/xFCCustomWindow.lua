@@ -8,6 +8,7 @@ $module xFCCustomWindow
 - Cache original control objects to preserve extension data and override control getters to return the original objects.
 - Setters that accept `xFCString` will also accept a Lua `string`.
 - `xFCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
+- Methods that returned a boolean to indicate success/failure now throw an error instead.
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
@@ -385,6 +386,7 @@ end
 
 Override Changes:
 - Hooks into control state preservation.
+- Works when window is not showing.
 
 @ self (xFCCustomWindow)
 @ horizoffset (number)
@@ -398,6 +400,16 @@ function methods:MoveAllControls(horizoffset, vertoffset)
         ctrl:MoveRelative(horizoffset, vertoffset)
     end
 end
+
+--[[
+% RestorePosition
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCCustomWindow)
+]]
+methods.RestorePosition = mixin_proxy.boolean_to_error("RestorePosition")
 
 --[[
 % FindControl
