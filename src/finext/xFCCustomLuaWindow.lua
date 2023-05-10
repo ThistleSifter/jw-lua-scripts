@@ -28,10 +28,6 @@ local methods = class.Methods
 local static = class.StaticMethods
 local private = setmetatable({}, {__mode = "k"})
 
-local trigger_measurement_unit_change
-local each_last_measurement_unit_change
-
-
 --[[
 % CreateStandardControlEvent
 
@@ -341,6 +337,14 @@ function static.CreateCustomWindowChangeEvent(...)
     return create_change_event(parse_params(...), function(target) return target end)
 end
 
+local measurement_unit_change = static.CreateCustomWindowChangeEvent(
+    {
+        name = "last_measurementunit",
+        get = function(window)
+            return finext.xFCCustomLuaWindow.GetMeasurementUnit(window)
+        end,
+    }
+)
 
 -- HandleTimer is omitted from this list because it is handled separately
 local window_events = {"HandleCancelButtonPressed", "HandleOkButtonPressed", "InitWindow", "CloseWindow", "DarkModeIsChanging", "HandleActivate"}
@@ -1395,7 +1399,7 @@ function methods:SetMeasurementUnit(measurementunit)
         end
     end
 
-    trigger_measurement_unit_change(self)
+    measurement_unit_change.trigger(self)
 end
 
 --[[
@@ -1434,7 +1438,7 @@ end
 Template for MeasurementUnitChange handlers.
 
 @ self (xFCCustomLuaWindow)
-@ last_unit (number) The window's previous measurement unit.
+@ last_measurementunit (number) The window's previous measurement unit.
 ]]
 
 --[[
@@ -1451,6 +1455,7 @@ The even will fire when:
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `HandleMeasurementUnitChange` for callback signature.
 ]]
+methods.AddHandleMeasurementUnitChange = measurement_unit_change.add
 
 --[[
 % RemoveHandleMeasurementUnitChange
@@ -1462,15 +1467,7 @@ Removes a handler added with `AddHandleMeasurementUnitChange`.
 @ self (xFCCustomLuaWindow)
 @ callback (function)
 ]]
-methods.AddHandleMeasurementUnitChange, methods.RemoveHandleMeasurementUnitChange, trigger_measurement_unit_change, each_last_measurement_unit_change = finext.xFCCustomLuaWindow.CreateCustomWindowChangeEvent(
-    {
-        name = "last_unit",
-        get = function(window)
-            return finext.xFCCustomLuaWindow.GetMeasurementUnit(window)
-        end,
-        initial = finext.xFCUI.CalcDefaultMeasurementUnit(),
-    }
-)
+methods.RemoveHandleMeasurementUnitChange = measurement_unit_change.remove
 
 --[[
 % CreateMeasurementEdit
