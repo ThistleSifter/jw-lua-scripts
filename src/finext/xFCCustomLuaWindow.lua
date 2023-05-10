@@ -9,7 +9,7 @@ $module xFCCustomLuaWindow
 - All `Register*` methods (apart from `RegisterHandleControlEvent`) have accompanying `Add*` and `Remove*` methods to enable multiple handlers to be added per event.
 - Handlers for all window events (ie not control events) recieve the window object as the first argument.
 - Control handlers are passed original object to preserve extension data.
-- Added custom callback queue which can be used by custom events to add dispatchers that will run with the next control event.
+- Added static methods which can be used by other extensions to create standard control events and custom change events for controls and windows.
 - Added `HasBeenShown` method for checking if the window has been previously shown.
 - All controls have their state stored upon closing and restored upon re-opening.
 - Added methods for the automatic restoration of previous window position when showing (RGPLua > 0.60) for use with `finenv.RetainLuaState` and modeless windows.
