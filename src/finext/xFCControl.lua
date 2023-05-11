@@ -440,4 +440,5 @@ Removes a handler added with `AddHandleCommand`.
 @ callback (function)
 ]]
 methods.RemoveHandleCommand = handle_command.remove
+
 return class
