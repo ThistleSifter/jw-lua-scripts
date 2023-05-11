@@ -377,7 +377,7 @@ Override Changes:
 @ str (any)
 ]]
 function methods:SetLuaString(str)
-    self.__:SetLuaString(tostring(str))
+    self.__:SetLuaString(str ~= nil and tostring(str) or nil)
 end
 
 props.LuaString = {
@@ -396,7 +396,7 @@ To prevent a new `xFCString` object from being created, an existing `xFCString` 
 
 @ value (any)
 @ [xfcstring] (xFCString)
-: (xFCString¹)
+: (xFCString)
 ]]
 function static.ToxFCString(value, xfcstring)
     if finext_helper.is_extension(value) and value.ExtClassName == "xFCString" then
