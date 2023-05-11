@@ -36,14 +36,18 @@ local private = setmetatable({}, {__mode = "k"})
 A helper function for creating a standard control event. Standard refers to the `Handle*` methods from `FCCustomLuaWindow` (not including `HandleControlEvent`).
 For example usage, refer to the source for the `xFCControl` extension.
 
+The returned event `table` contains the following functions (those labelled as *public* can be used as public methods, ones marked private should not be exposed publically):
+- *void* `add([xFCControl] control, [function] callback)` *(public)* - A function for adding event handlers which can be used as a public method.
+- *void* `remove([xFCControl] control, [function] callback)` *(public)* - A function for removing event handlers which can be used as a public method.
+
 @ name (string) The full event name, case-sensitive (eg. `HandleCommand`, `HandleUpDownPressed`, etc)
-: (function) A method for adding handlers.
-: (function) A method for removing handlers.
+: (table) A table of functions for managing the event.
 ]]
 function static.CreateStandardControlEvent(name)
     local wrappers = {}
+    local event = {}
 
-    local function add_method(control, callback)
+    function event.add(control, callback)
         finext_helper.assert_argument_type(2, callback, "function")
         local window = control:GetParent()
         finext_helper.assert(window, "Cannot add handler to control with no parent window.")
@@ -59,7 +63,7 @@ function static.CreateStandardControlEvent(name)
         wrappers[control][callback] = wrapper
     end
 
-    local function remove_method(control, callback)
+    function event.remove(control, callback)
         finext_helper.assert_argument_type(2, callback, "function")
 
         local wrapper = wrappers[control] and wrappers[control][callback]
@@ -70,7 +74,7 @@ function static.CreateStandardControlEvent(name)
         end
     end
 
-    return add_method, remove_method
+    return event
 end
 
 local function unpack_arguments(values, order)
@@ -80,7 +84,6 @@ local function unpack_arguments(values, order)
     end
     return table.unpack(args)
 end
-
 
 local function get_param_value(target, param)
     if type(param) == "string" then
