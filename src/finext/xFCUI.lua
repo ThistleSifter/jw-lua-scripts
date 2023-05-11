@@ -5,16 +5,72 @@ $module xFCUI
 
 ## Summary of Modifications
 - `FCString` parameter in getters is optional and if omitted, the result will be returned as a Lua `string`.
--- Added numerous static methods for handling measurement units.
+- Methods that returned a boolean to indicate success/failure now throw an error instead.
+- Added numerous static methods for handling measurement units.
 ]] --
 local finext = require("library.finext")
-local finext_helper = require("library.finext_helper")
+local finext_proxy = require("library.finext_proxy")
 
 local class = {Methods = {}, StaticMethods = {}}
 local methods = class.Methods
 local static = class.StaticMethods
 
 local temp_str = finext.xFCString()
+
+--[[
+% ActivateDocumentWindow
+
+**[Breaking Change] [Fluid] [Override]**
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+]]
+methods.ActivateDocumentWindow = finext_proxy.boolean_to_error("ActivateDocumentWindow")
+
+--[[
+% DisplayShellFolder
+
+**[Breaking Change] [Fluid] [Override]**
+
+Override Changes:
+- Accepts Lua `string` in addition to `xFCString`.
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ folderstring (string | xFCString)
+]]
+methods.DisplayShellFolder = finext_proxy.xfcstring_setter(finext_proxy.boolean_to_error("DisplayShellFolder"), 2, temp_str)
+
+--[[
+% DisplayWebURL
+
+**[Breaking Change] [Fluid] [Override]**
+
+Override Changes:
+- Accepts Lua `string` in addition to `xFCString`.
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ urlstring (string | xFCString)
+]]
+methods.DisplayWebURL = finext_proxy.xfcstring_setter(finext_proxy.boolean_to_error("DisplayWebURL"), 2, temp_str)
+
+--[[
+% ExecuteOSMenuCommand
+
+**[>= v0.58] [Breaking Change] [Fluid] [Override]**
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ osmenucmd (integer)
+]]
+if finale.FCUI._class.ExecuteOSMenuCommand then
+    methods.ExecuteOSMenuCommand = finext_proxy.boolean_to_error("ExecuteOSMenuCommand")
+end
 
 --[[
 % GetDecimalSeparator
@@ -26,23 +82,81 @@ Override Changes:
 
 @ self (xFCUI)
 @ [str] (xFCString)
-: (string)
+: (string) Returned if `str` is omitted.
 ]]
-function methods:GetDecimalSeparator(str)
-    finext_helper.assert_argument_type(2, str, "nil", "xFCString")
+methods.GetDecimalSeparator = finext_proxy.xfcstring_getter("GetDecimalSeparator", 2, 2, temp_str)
 
-    local do_return = false
-    if not str then
-        str = temp_str
-        do_return = true
-    end
+--[[
+% GetUserLocaleName
 
-    self.__:GetDecimalSeparator(str.__)
+**[?Fluid] [Override]**
 
-    if do_return then
-        return str.LuaString
-    end
+Override Changes:
+- Passing an `FCString` is optional. If omitted, the result is returned as a Lua `string`. If passed, nothing is returned and the method is fluid.
+
+@ self (xFCUI)
+@ [str] (xFCString)
+: (string) Returned if `str` is omitted.
+]]
+if finale.FCUI.__class.GetUserLocaleName then
+    methods.GetUserLocaleName = finext_proxy.xfcstring_getter("GetUserLocaleName", 2, 2, temp_str)
 end
+
+--[[
+% IsFontAvailable
+
+**[Override]**
+
+Override Changes:
+- Accepts Lua `string` in addition to `xFCString`.
+
+@ self (xFCUI)
+@ fontname (string | xFCString)
+: (boolean)
+]]
+methods.IsFontAvailable = finext_proxy.xfcstring_setter("IsFontAvailable", 2, temp_str)
+
+--[[
+% MenuCommand
+
+**[Breaking Change] [Deprecated] [Fluid] [Override]**
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ menucmd (integer)
+]]
+methods.MenuCommand = finext_proxy.boolean_to_error("MenuCommand")
+
+--[[
+% MenuPositionCommand
+
+**[Breaking Change] [Deprecated] [Fluid] [Override]**
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ mainmenuidx (integer)
+@ dropdownidx (integer)
+@ submenuidx (integer)
+]]
+methods.MenuPositionCommand = finext_proxy.boolean_to_error("MenuPositionCommand")
+
+--[[
+% TextToClipboard
+
+**[Breaking Change] [Fluid] [Override]**
+
+Override Changes:
+- Throws an error instead of returning a boolean for success/failure.
+
+@ self (xFCUI)
+@ text (string)
+]]
+methods.TextToClipboard = finext_proxy.boolean_to_error("TextToClipboard")
+
 
 local measurementunits = {
     [finale.MEASUREMENTUNIT_DEFAULT] = true,
