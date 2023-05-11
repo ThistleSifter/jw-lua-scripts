@@ -364,51 +364,6 @@ function methods:SetMeasurement10000th(value, measurementunit)
     finext.xFCString.SetMeasurement(self, utils.round(value) / 10000, measurementunit)
 end
 
---[[
-% SetLuaString
-
-**[Fluid] [Override]**
-
-Override Changes:
-- Will accept any type, using the value resulting from a call to `tostring`
-- Also applies to `LuaString` property
-
-@ self (xFCString)
-@ str (any)
-]]
-function methods:SetLuaString(str)
-    self.__:SetLuaString(str ~= nil and tostring(str) or nil)
-end
-
-props.LuaString = {
-    Set = function(self, value)
-        self:SetLuaString(value)
-    end,
-}
-
---[[
-% ToxFCString
-
-**[Static]**
-
-Casts a value to an `xFCString` object. If an `xFCString` is passed it will be returned unaltered.
-To prevent a new `xFCString` object from being created, an existing `xFCString` can be optionally passed as the second parameter.
-
-@ value (any)
-@ [xfcstring] (xFCString)
-: (xFCString)
-]]
-function static.ToxFCString(value, xfcstring)
-    if finext_helper.is_extension(value) and value.ExtClassName == "xFCString" then
-        return value
-    elseif library.is_finale_object(value) and value:ClassName() == "FCString" then
-        value = value.LuaString
-    end
-
-    local str = xfcstring or finext.xFCString()
-    return str:SetLuaString(value)
-end
-
 local measurement_suffixes = {
     [finext.MEASUREMENTSUFFIX_SHORT] = {
         [finale.MEASUREMENTUNIT_EVPUS] = "e",
@@ -457,5 +412,63 @@ function static.GetMeasurementSuffix(style, measurementunit)
     end
     return measurement_suffixes[style] and measurement_suffixes[style][measurementunit]
 end
+
+--[[
+% ToxFCString
+
+**[Static]**
+
+Casts a value to an `xFCString` object. If an `xFCString` is passed it will be returned unaltered.
+To prevent a new `xFCString` object from being created, an existing `xFCString` can be optionally passed as the second parameter.
+
+@ value (any)
+@ [xfcstring] (xFCString)
+: (xFCString)
+]]
+function static.ToxFCString(value, xfcstring)
+    if finext_helper.is_extension(value) and value.ExtClassName == "xFCString" then
+        return value
+    elseif library.is_finale_object(value) and value:ClassName() == "FCString" then
+        value = value.LuaString
+    end
+
+    local str = xfcstring or finext.xFCString()
+    return str:SetLuaString(value)
+end
+
+--[[
+% ToLuaString
+
+Takes a value and turns it into a Lua `string`.
+This function casts `nil` values to an empty `string`.
+
+@ value (any)
+: (string)
+]]
+function static.ToLuaString(value)
+    return value == nil and "" or tostring(value)
+end
+
+--[[
+% SetLuaString
+
+**[Fluid] [Override]**
+
+Override Changes:
+- Will accept any type, using the value resulting from a call to `tostring`
+- Also applies to `LuaString` property
+
+@ self (xFCString)
+@ str (any)
+]]
+function methods:SetLuaString(str)
+    self.__:SetLuaString(str ~= nil and tostring(str) or nil)
+end
+
+props.LuaString = {
+    Set = function(self, value)
+        self:SetLuaString(value)
+    end,
+}
 
 return class
