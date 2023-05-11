@@ -405,7 +405,7 @@ end
 % RestorePosition
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomWindow)
 ]]
