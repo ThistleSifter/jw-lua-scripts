@@ -181,7 +181,7 @@ end
 
 Override Changes:
 - Accepts Lua `string` in addition to `xFCString`.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCStrings)
 @ folderstring (xFCString | string)
@@ -195,7 +195,7 @@ methods.LoadFolderFiles = finext_proxy.xfcstring_setter(finext_proxy.boolean_to_
 
 Override Changes:
 - Accepts Lua `string` in addition to `xFCString`.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCStrings)
 @ folderstring (xFCString | string)
@@ -208,7 +208,7 @@ methods.LoadSubfolders = finext_proxy.xfcstring_setter(finext_proxy.boolean_to_e
 **[Breaking Change] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCStrings)
 ]]
@@ -220,7 +220,7 @@ methods.LoadSymbolFonts = finext_helper.boolean_to_error("LoadSymbolFonts")
 **[Breaking Change] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCStrings)
 ]]
