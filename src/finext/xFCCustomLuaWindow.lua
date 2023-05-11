@@ -314,7 +314,6 @@ function static.CreateCustomControlChangeEvent(...)
     return create_change_event(parse_params(...), function(target) return target:GetParent() end, {"HandleCommand"})
 end
 
-
 --[[
 % CreateCustomWindowChangeEvent
 
@@ -549,7 +548,7 @@ end
 
 Override Changes:
 - Ensures that the handler is passed the original control object.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `FCCustomLuaWindow.HandleCommand` in the PDK for callback signature.
@@ -585,7 +584,7 @@ Removes a handler added by `AddHandleCommand`.
 
 Override Changes:
 - Ensures that the handler is passed the original control object.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `FCCustomLuaWindow.HandleDataListCheck` in the PDK for callback signature.
@@ -621,7 +620,7 @@ Removes a handler added by `AddHandleDataListCheck`.
 
 Override Changes:
 - Ensures that the handler is passed the original control object.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `FCCustomLuaWindow.HandleDataListSelect` in the PDK for callback signature.
@@ -657,7 +656,7 @@ Removes a handler added by `AddHandleDataListSelect`.
 
 Override Changes:
 - Ensures that the handler is passed the original control object.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `FCCustomLuaWindow.HandleUpDownPressed` in the PDK for callback signature.
@@ -707,7 +706,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `CancelButtonPressed` for callback signature.
@@ -754,7 +753,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function)  See `OkButtonPressed` for callback signature.
@@ -801,7 +800,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `InitWindow` for callback signature.
@@ -848,7 +847,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `CloseWindow` for callback signature.
@@ -896,7 +895,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `DarkModeIsChanging` for callback signature.
@@ -944,7 +943,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `HandleActivate` for callback signature.
@@ -974,23 +973,6 @@ Removes a handler added by `AddHandleActivate`.
 ]]
 for _, event in ipairs(window_events) do
     create_handle_methods(event)
-end
-
---[[
-% QueueHandleCustom
-
-**[Fluid] [Internal]**
-Adds a function to the queue which will be executed in the same context as an event handler at the next available opportunity.
-Once called, the callback will be removed from tbe queue (i.e. it will only be called once). For multiple calls, the callback will need to be added to the queue again.
-The callback will not be passed any arguments.
-
-@ self (xFCCustomLuaWindow)
-@ callback (function)
-]]
-function methods:QueueHandleCustom(callback)
-    finext_helper.assert_argument_type(2, callback, "function")
-
-    table.insert(private[self].HandleCustomQueue, callback)
 end
 
 if finenv.MajorVersion > 0 or finenv.MinorVersion >= 56 then
@@ -1035,7 +1017,7 @@ Override Changes:
 
 Override Changes:
 - Uses overridden callback signature.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCCustomLuaWindow)
 @ callback (function) See `HandleTimer` for callback signature (note the change in arguments).
