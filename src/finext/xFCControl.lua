@@ -346,7 +346,7 @@ Override Changes:
 @ horizresize (number)
 @ vertresize (number)
 ]]
-function methods:MoveRelative(horizresize, vertresize)
+function methods:ResizeRelative(horizresize, vertresize)
     finext_helper.assert_argument_type(2, horizresize, "number")
     finext_helper.assert_argument_type(3, vertresize, "number")
 
