@@ -23,7 +23,7 @@ local temp_str = finext.xFCString()
 **[Breaking Change] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 ]]
@@ -36,7 +36,7 @@ methods.ActivateDocumentWindow = finext_proxy.boolean_to_error("ActivateDocument
 
 Override Changes:
 - Accepts Lua `string` in addition to `xFCString`.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ folderstring (string | xFCString)
@@ -50,7 +50,7 @@ methods.DisplayShellFolder = finext_proxy.xfcstring_setter(finext_proxy.boolean_
 
 Override Changes:
 - Accepts Lua `string` in addition to `xFCString`.
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ urlstring (string | xFCString)
@@ -63,7 +63,7 @@ methods.DisplayWebURL = finext_proxy.xfcstring_setter(finext_proxy.boolean_to_er
 **[>= v0.58] [Breaking Change] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ osmenucmd (integer)
@@ -122,7 +122,7 @@ methods.IsFontAvailable = finext_proxy.xfcstring_setter("IsFontAvailable", 2, te
 **[Breaking Change] [Deprecated] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ menucmd (integer)
@@ -135,7 +135,7 @@ methods.MenuCommand = finext_proxy.boolean_to_error("MenuCommand")
 **[Breaking Change] [Deprecated] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ mainmenuidx (integer)
@@ -150,7 +150,7 @@ methods.MenuPositionCommand = finext_proxy.boolean_to_error("MenuPositionCommand
 **[Breaking Change] [Fluid] [Override]**
 
 Override Changes:
-- Throws an error instead of returning a boolean for success/failure.
+- Throws an error instead of returning a boolean to indicate success/failure.
 
 @ self (xFCUI)
 @ text (string)
