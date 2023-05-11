@@ -19,6 +19,7 @@ local private = setmetatable({}, {__mode = "k"})
 -- So as not to prevent the window (and by extension the controls) from being garbage collected in the normal way, use weak keys and values for storing the parent window
 local parent = setmetatable({}, {__mode = "kv"})
 
+local handle_command = finext.xFCCustomLuaWindow.CreateStandardControlEvent("HandleCommand")
 local temp_str = finext.xFCString()
 
 --[[
@@ -426,6 +427,7 @@ Adds a handler for command events.
 @ self (xFCControl)
 @ callback (function) See `FCCustomLuaWindow.HandleCommand` in the PDK for callback signature.
 ]]
+methods.AddHandleCommand = handle_command.add
 
 --[[
 % RemoveHandleCommand
@@ -437,6 +439,5 @@ Removes a handler added with `AddHandleCommand`.
 @ self (xFCControl)
 @ callback (function)
 ]]
-methods.AddHandleCommand, methods.RemoveHandleCommand = finext.xFCCustomLuaWindow.CreateStandardControlEvent("HandleCommand")
-
+methods.RemoveHandleCommand = handle_command.remove
 return class
