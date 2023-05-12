@@ -251,7 +251,6 @@ for method, valid_types in pairs({
     end
 end
 
-
 --[[
 % GetText
 
