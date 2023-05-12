@@ -265,26 +265,13 @@ Override Changes:
 @ [str] (xFCString)
 : (string) Returned if `str` is omitted.
 ]]
-function methods:GetText(str)
-    finext_helper.assert_argument_type(2, str, "nil", "xFCString")
-
-    local do_return = false
-
-    if not str then
-        str = temp_str
-        do_return = true
-    end
-
+methods.GetText = finext_proxy.xfcstring_getter(function(self, str)
     if finext.xFCControl.UseStoredControlState(self) then
         str.LuaString = private[self].Text
     else
         self.__:GetText(str.__)
     end
-
-    if do_return then
-        return str.LuaString
-    end
-end
+end, 2, 2, temp_str)
 
 --[[
 % SetText
@@ -298,17 +285,13 @@ Override Changes:
 @ self (xFCControl)
 @ str (xFCString | string | number)
 ]]
-function methods:SetText(str)
-    finext_helper.assert_argument_type(2, str, "string", "number", "xFCString")
-
-    str = finext.xFCString.ToxFCString(str, temp_str)
-
+methods.SetText = finext_proxy.xfcstring_setter(function(self, str)
     if finext.xFCControl.UseStoredControlState(self) then
         private[self].Text = str.LuaString
     else
         self.__:SetText(str.__)
     end
-end
+end, 2, temp_str)
 
 --[[
 % MoveRelative
