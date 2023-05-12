@@ -9,7 +9,6 @@ $module xFCCtrlCheckbox
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
-local utils = require("library.utils")
 
 local class = {Methods = {}}
 local methods = class.Methods
@@ -20,10 +19,24 @@ local check_change = finext.xFCCustomLuaWindow.CreateCustomControlChangeEvent(
     -- If it becomes necessary to force this event to fire when the window is created, change to -1
     {
         name = "last_check",
-        get = "GetCheck",
+        get = function(ctrl)
+            return finext.xFCCtrlCheckbox.GetCheck(ctrl)
+        end,
         initial = 0,
     }
 )
+
+local function normalize_check(self, checked)
+    if checked < 1 then
+        return 0
+    end
+
+    if checked > 1 and self:GetThreeStatesMode() and (finenv.UI():IsOnMac() or finenv.MajorVersion > 0 or finenv.MinorVersion > 67) then
+        return 2
+    end
+
+    return 1
+end
 
 --[[
 % Init
@@ -56,7 +69,7 @@ function methods:SetCheck(checked)
     finext_helper.assert_argument_type(2, checked, "number")
 
     if finext.xFCControl.UseStoredControlState(self) then
-        private[self].Check = checked
+        private[self].Check = normalize_check(self, checked)
     else
         self.__:SetCheck(checked)
     end
