@@ -8,6 +8,7 @@ $module xFCCtrlCheckbox
 - Added hooks into control state preservation.
 ]] --
 local finext = require("library.finext")
+local finext_helper = require("library.finext_helper")
 local utils = require("library.utils")
 
 local class = {Methods = {}}
