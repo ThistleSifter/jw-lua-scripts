@@ -54,6 +54,38 @@ function class:Init()
 end
 
 --[[
+% StoreControlState
+
+Override Changes:
+- Store `xFCCtrlCheckbox`-specific properties.
+
+*Do not disable this method. Override as needed but call the parent first.*
+
+@ self (xFCCtrlCheckbox)
+]]
+function methods:StoreControlState()
+    finext.xFCControl.StoreControlState(self)
+
+    private[self].Check = self.__:GetCheck()
+end
+
+--[[
+% RestoreControlState
+
+Override Changes:
+- Restore `xFCCtrlCheckbox`-specific properties.
+
+*Do not disable this method. Override as needed but call the parent first.*
+
+@ self (xFCCtrlCheckbox)
+]]
+function methods:RestoreControlState()
+    finext.xFCControl.RestoreControlState(self)
+
+    self.__:SetCheck(private[self].Check)
+end
+
+--[[
 % SetCheck
 
 **[Fluid] [Override]**
