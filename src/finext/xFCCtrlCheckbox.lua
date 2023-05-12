@@ -56,6 +56,8 @@ end
 --[[
 % StoreControlState
 
+**[Fluid] [Internal] [Override]**
+
 Override Changes:
 - Store `xFCCtrlCheckbox`-specific properties.
 
@@ -71,6 +73,8 @@ end
 
 --[[
 % RestoreControlState
+
+**[Fluid] [Internal] [Override]**
 
 Override Changes:
 - Restore `xFCCtrlCheckbox`-specific properties.
