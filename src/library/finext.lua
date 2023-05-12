@@ -532,12 +532,12 @@ function private.load_extension_class(class_name)
     local result
 
     -- Try personal extensions first (allows the library's extension to be overridden if desired)
-    success, result = private.try_load_module("personal_extension." .. class_name)
+    success, result = private.try_load_module("personal_finext." .. class_name)
 
     if success then
         is_personal_extension = true
     else
-        success, result = private.try_load_module("extension." .. class_name)
+        success, result = private.try_load_module("finext." .. class_name)
     end
 
     if not success then
@@ -1078,7 +1078,7 @@ finext = setmetatable({}, {
 local function load_constants(mod_name)
     local success
     local result
-    success, result = try_load_module(mod_name)
+    success, result = private.try_load_module(mod_name)
     if not success then
         return
     end
@@ -1090,7 +1090,7 @@ local function load_constants(mod_name)
     end
 
     for k, v in pairs(result) do
-        assert_valid_name(kk, "group names")
+        assert_valid_name(k, "group names")
         for kk, vv in pairs(v) do
             assert_valid_name(kk, "names", "." .. k)
             local const = k .. "_" .. kk
