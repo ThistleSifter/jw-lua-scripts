@@ -252,7 +252,7 @@ function methods:SetMeasurementInteger(value, measurementunit, measurementsuffix
     finext_helper.assert_argument_type(3, measurementunit, "number")
     finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
-    finext.xFCString.SetMeasurement(self, utils.round(value), measurementunit)
+    finext.xFCString.SetMeasurement(self, utils.round(value), measurementunit, measurementsuffix)
 end
 
 --[[
@@ -306,7 +306,7 @@ function methods:SetMeasurementEfix(value, measurementunit, measurementsuffix)
     finext_helper.assert_argument_type(3, measurementunit, "number")
     finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
-    finext.xFCString.SetMeasurement(self, utils.round(value) / 64, measurementunit)
+    finext.xFCString.SetMeasurement(self, utils.round(value) / 64, measurementunit, measurementsuffix)
 end
 
 --[[
@@ -361,7 +361,7 @@ function methods:SetMeasurement10000th(value, measurementunit)
     finext_helper.assert_argument_type(3, measurementunit, "number")
     finext_helper.assert_argument_type(4, measurementsuffix, "nil", "number")
 
-    finext.xFCString.SetMeasurement(self, utils.round(value) / 10000, measurementunit)
+    finext.xFCString.SetMeasurement(self, utils.round(value) / 10000, measurementunit, measurementsuffix)
 end
 
 local measurement_suffixes = {
