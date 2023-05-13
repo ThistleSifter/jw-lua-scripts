@@ -381,7 +381,7 @@ local measurement_suffixes = {
         [finale.MEASUREMENTUNIT_POINTS] = "pt",
         [finale.MEASUREMENTUNIT_PICAS] = "p",
         [finale.MEASUREMENTUNIT_SPACES] = "sp",
-        [FINALE.MEASUREMENTUNIT_MILLIMETERS] = "mm",
+        [finale.MEASUREMENTUNIT_MILLIMETERS] = "mm",
     },
     [finext.MEASUREMENTSUFFIX_FULLNAME] = {
         [finale.MEASUREMENTUNIT_EVPUS] = "EVPUs",
