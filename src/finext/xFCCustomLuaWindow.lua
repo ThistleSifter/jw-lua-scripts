@@ -21,6 +21,7 @@ $module xFCCustomLuaWindow
 ]] --
 local finext = require("library.finext")
 local finext_helper = require("library.finext_helper")
+local finext_proxy = require("library.finext_proxy")
 local utils = require("library.utils")
 
 local class = {Methods = {}, StaticMethods = {}}
