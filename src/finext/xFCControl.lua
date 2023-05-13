@@ -54,7 +54,7 @@ function methods:GetParent()
 end
 
 --[[
-% RegisterParent
+% __RegisterParent
 
 **[Fluid] [Internal]**
 
@@ -65,7 +65,7 @@ Used to register the parent window when the control is created.
 @ self (xFCControl)
 @ window (xFCCustomWindow)
 ]]
-function methods:RegisterParent(window)
+function methods:__RegisterParent(window)
     finext_helper.assert_argument_type(2, window, "xFCCustomWindow")
 
     if parent[self] then
@@ -227,7 +227,7 @@ for method, valid_types in pairs({
     Width = {"number"},
 }) do
     methods["Get" .. method] = function(self)
-        if finext.xFCControl.UseStoredControlState(self) then
+        if finext.xFCControl.__UseStoredControlState(self) then
             return private[self][method]
         end
 
@@ -237,7 +237,7 @@ for method, valid_types in pairs({
     methods["Set" .. method] = function(self, value)
         finext_helper.assert_argument_type(2, value, table.unpack(valid_types))
 
-        if finext.xFCControl.UseStoredControlState(self) then
+        if finext.xFCControl.__UseStoredControlState(self) then
             private[self][method] = value
         else
             -- Fix bug with text box content being cleared on Mac when Enabled or Visible state is changed
@@ -265,7 +265,7 @@ Override Changes:
 : (string) Returned if `str` is omitted.
 ]]
 methods.GetText = finext_proxy.xfcstring_getter(function(self, str)
-    if finext.xFCControl.UseStoredControlState(self) then
+    if finext.xFCControl.__UseStoredControlState(self) then
         str.LuaString = private[self].Text
     else
         self.__:GetText(str.__)
@@ -285,7 +285,7 @@ Override Changes:
 @ str (xFCString | string | number)
 ]]
 methods.SetText = finext_proxy.xfcstring_setter(function(self, str)
-    if finext.xFCControl.UseStoredControlState(self) then
+    if finext.xFCControl.__UseStoredControlState(self) then
         private[self].Text = str.LuaString
     else
         self.__:SetText(str.__)
@@ -337,7 +337,7 @@ function methods:ResizeRelative(horizresize, vertresize)
 end
 
 --[[
-% UseStoredControlState
+% __UseStoredControlState
 
 **[Internal]**
 
@@ -348,13 +348,13 @@ Checks if this control should use its stored state instead of the live state fro
 @ self (xFCControl)
 : (boolean)
 ]]
-function methods:UseStoredControlState()
+function methods:__UseStoredControlState()
     local parent = self:GetParent()
     return finext_helper.is_instance_of(parent, "xFCCustomLuaWindow") and not parent:WindowExists() and parent:HasBeenShown()
 end
 
 --[[
-% StoreControlState
+% __StoreControlState
 
 **[Fluid] [Internal]**
 
@@ -364,7 +364,7 @@ Stores the control's current state.
 
 @ self (xFCControl)
 ]]
-function methods:StoreControlState()
+function methods:__StoreControlState()
     self.__:GetText(temp_str.__)
     private[self].Text = temp_str.LuaString
     private[self].Enable = self.__:GetEnable()
@@ -376,7 +376,7 @@ function methods:StoreControlState()
 end
 
 --[[
-% RestoreControlState
+% __RestoreControlState
 
 **[Fluid] [Internal]**
 
@@ -386,7 +386,7 @@ Restores the control's stored state.
 
 @ self (xFCControl)
 ]]
-function methods:RestoreControlState()
+function methods:__RestoreControlState()
     self.__:SetEnable(private[self].Enable)
     self.__:SetVisible(private[self].Visible)
     self.__:SetLeft(private[self].Left)
