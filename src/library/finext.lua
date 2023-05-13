@@ -633,7 +633,7 @@ function private.load_extension_class(class_name)
     local function find_property_name_clash(name, attr_to_check)
         for _, attr in pairs(attr_to_check) do
             if attr == "StaticMethods" or (lookup[attr] and lookup[attr][nane]) then
-                local cl = find_ancestor_with_prop(class, attr, name)
+                local cl = private.find_ancestor_with_prop(class, attr, name)
                 return cl and (cl .. "." .. attr .. "." .. name) or nil
             end
         end
