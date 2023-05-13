@@ -194,6 +194,7 @@ finext.xFXString.PrintHelloWorld()
 
 ## Fluid Interface (aka Method Chaining)
 Any method on an extension-wrapped Finale object that returns zero values (returning `nil` still counts as a value) will have a fluid interface automatically applied by the library. This means that instead of returning nothing, the method will return `self`.
+This also applies to any PDK Framework methods that are marked as `void`.
 
 For example, this was the previous way of creating an edit control:
 ```lua
