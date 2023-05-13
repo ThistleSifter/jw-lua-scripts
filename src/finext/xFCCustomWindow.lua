@@ -33,7 +33,7 @@ end
 local function create_control(self, func, num_args, ...)
     local control = finext.__(self, "Create" .. func, ...)
     private[self].Controls[control:GetControlID()] = control
-    control:RegisterParent(self)
+    control:__RegisterParent(self)
 
     local control_name = select(num_args + 1, ...)
     if control_name then
