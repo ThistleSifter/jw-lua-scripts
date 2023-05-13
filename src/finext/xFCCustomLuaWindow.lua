@@ -479,7 +479,7 @@ function class:Init()
            event.__["Register" .. event](self.__, function(...)
                 if private[self].HasBeenShown then
                     for control in each(self) do
-                        control:RestoreControlState()
+                        control:__RestoreControlState()
                     end
                 end
 
@@ -503,7 +503,7 @@ function class:Init()
                 end
 
                 for control in each(self) do
-                    control:StoreControlState()
+                    control:__StoreControlState()
                 end
 
                 private[self].HasBeenShown = true
