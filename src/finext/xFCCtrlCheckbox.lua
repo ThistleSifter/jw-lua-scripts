@@ -54,7 +54,7 @@ function class:Init()
 end
 
 --[[
-% StoreControlState
+% __StoreControlState
 
 **[Fluid] [Internal] [Override]**
 
@@ -65,14 +65,14 @@ Override Changes:
 
 @ self (xFCCtrlCheckbox)
 ]]
-function methods:StoreControlState()
-    finext.xFCControl.StoreControlState(self)
+function methods:__StoreControlState()
+    finext.xFCControl.__StoreControlState(self)
 
     private[self].Check = self.__:GetCheck()
 end
 
 --[[
-% RestoreControlState
+% __RestoreControlState
 
 **[Fluid] [Internal] [Override]**
 
@@ -83,8 +83,8 @@ Override Changes:
 
 @ self (xFCCtrlCheckbox)
 ]]
-function methods:RestoreControlState()
-    finext.xFCControl.RestoreControlState(self)
+function methods:__RestoreControlState()
+    finext.xFCControl.__RestoreControlState(self)
 
     self.__:SetCheck(private[self].Check)
 end
@@ -104,7 +104,7 @@ Override Changes:
 function methods:SetCheck(checked)
     finext_helper.assert_argument_type(2, checked, "number")
 
-    if finext.xFCControl.UseStoredControlState(self) then
+    if finext.xFCControl.__UseStoredControlState(self) then
         private[self].Check = normalize_check(self, checked)
     else
         self.__:SetCheck(checked)
@@ -122,7 +122,7 @@ Override Changes:
 @ self (xFCCtrlCheckbox)
 ]]
 function methods:GetCheck()
-    if finext.xFCControl.UseStoredControlState(self) then
+    if finext.xFCControl.__UseStoredControlState(self) then
         return private[self].Check
     end
 
